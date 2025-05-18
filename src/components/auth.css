@@ -14,6 +14,10 @@
   user-select: none; /* Стандартный синтаксис */
 }
 
+.hide {
+    opacity: 0;
+}
+
 .mainground {
     min-height: 100%;
     position: absolute;
@@ -48,24 +52,15 @@ h1.main-text {
 .context-rect {
     position: absolute;
     top: -90px; left: 360px;
-    width: 600px; height: 550px;
+    width: 900px; height: 550px;
     background: linear-gradient(to left, #34d1d1, #0ca9a9);
-    /* transform: rotate(-10deg); */
     transform: rotate(-10deg);
+    transition: all 2s ease;
 }
 
-.animate-to-registration {
-    animation-name: go-over-to-registration-anim;
-    animation-duration: 2s;
-    animation-timing-function: linear;
-    animation-direction: alternate-reverse;
-}
-
-@keyframes go-over-to-registration-anim {
-    to {
-        left: -180px;
-        transform: rotate();
-    }
+.rect-state-signUp {
+    left: -550px;
+    transform: rotate(10deg);
 }
 
 .form {
@@ -73,6 +68,11 @@ h1.main-text {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     gap: 20px;
+    transition: all 1s ease;
+}
+
+.form.signUp {
+    display: none;
 }
 
 .meeting {
@@ -82,10 +82,15 @@ h1.main-text {
     width: 300px;
     padding-right: 50px;
     color: #fff;
+    transition: all 1s ease;
 }
 
 .login.meeting {
     right: 0;
+}
+
+.meeting.signUp {
+    display: none;
 }
 
 .row {

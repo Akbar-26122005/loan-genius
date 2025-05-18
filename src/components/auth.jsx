@@ -7,54 +7,87 @@ import visibility_off_icon from '../resources/visibility_off_icon.svg';
 function Login() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [nowLogInState, setNewState] = useState(true);
 
-    const loginSubmit = async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(event.currentTarget);
-        const [ login, password ] = [ formData.get('login'), formData.get('password') ];
-
-        try {
-            const response = await fetch('http://localhost:5000/login-user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json' // Указываем, что ожидаем JSON-ответ
-                },
-                body: JSON.stringify({ login, password })
-            });
-
-            if (!response.ok)
-                throw new Error('Сетевая ошибка: ' + response.statusText);
-
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.error('Ошибка:', error);
-        }
-    };
-
+    
     function passwordVisibilityControl() {
         if (showPassword)
             setShowPassword(false);
-        else
+        else {
             setShowPassword(true);
+        }
         document.getElementById('password-input').focus();
     }
 
+    let initialized = false;
+    let contextRect = null;
+    let loginMeeting = null;
+    let loginForm = null;;
+    let signUpMeeting = null;
+    let signUpForm = null;
+    const rectStateSignUp = 'rect-state-signUp';
+
+    function init() {
+        if (initialized) return;
+        contextRect = document.querySelector('.context-rect');
+        //login
+        loginMeeting = document.querySelector('.login.meeting');
+        loginForm = document.querySelector('.login.form');
+        //sign up
+        signUpMeeting = document.querySelector('.signUp.meeting');
+        signUpForm = document.querySelector('.signUp.form');
+
+        loginForm.addEventListener('transitionend', () => {
+            loginMeeting.style.display = 'none';
+            loginForm.style.display = 'none';
+        });
+
+        signUpForm.addEventListener('transitionend', () => {
+            signUpMeeting.style.display = 'none';
+            signUpForm.style.display = 'none';
+        });
+
+        initialized = true;
+    }
+    
     function goOverTransition() {
-        console.log(nowLogInState);
-        setNewState(!nowLogInState);
+        init();
+        if (contextRect.classList.contains(rectStateSignUp)) {
+            contextRect.classList.remove(rectStateSignUp);
+
+            loginMeeting.style.display = 'flex';
+            loginForm.style.display = 'flex';
+
+            loginMeeting.classList.remove('hide');
+            loginForm.classList.remove('hide');
+
+            signUpMeeting.classList.add('hide');
+            signUpForm.classList.add('hide');
+        } else {
+            contextRect.classList.add(rectStateSignUp);
+
+            loginMeeting.classList.add('hide');
+            loginForm.classList.add('hide');
+
+            signUpMeeting.classList.remove('hide');
+            signUpForm.classList.remove('hide');
+
+            loginMeeting.style.display = 'flex';
+            loginForm.style.display = 'flex';
+
+        }
     }
 
     return (
         <div className='mainground auth'>
             <div className="auth-context">
+                {/* Кнопка возврата назад */}
                 <div className='back-button' onClick={() => {window.history.back()}}>
                     <img src={back_icon} alt="" />
                 </div>
-                <form className='login form' onSubmit={loginSubmit}>
+
+                <div className="context-rect"></div>
+                {/* Форма для входа */}
+                <form className='login form' onSubmit={ () => console.log('trying login.') }>
                     <h1 className='main-text'>Login</h1>
                     <div className="row">
                         <input type='text' id='login-input' name='login' placeholder='' required />
@@ -71,12 +104,14 @@ function Login() {
                             src={ showPassword ? visibility_icon : visibility_off_icon} />
                     </div>
                     <button id='log-in-btn'>Login</button>
-                    <div className='transition-hint'>
-                        Don't have an account?</div>
-                    <div className='transition-link' id='go-to-registration' onClick={() => goOverTransition()}>
-                        Sign up</div>
+                    <div>
+                        <div className='transition-hint'>
+                            Don't have an account?</div>
+                        <div className='transition-link' id='go-to-registration' onClick={ () => goOverTransition() }>
+                            Sign up</div>
+                    </div>
                 </form>
-                <div className="context-rect animate-to-registration"></div>
+                {/* Приветствие пользователя при входе */}
                 <div className="login meeting">
                     <div className="main-text">
                         <div>WELCOME</div>
@@ -90,6 +125,44 @@ function Login() {
                         <div>help</div>
                     </div>
                 </div>
+
+                {/* Приветствие пользователя при регистрации */}
+                <div className='signUp meeting hide'>
+                    <div className="main-text">
+                        <div>WELCOME!</div>
+                    </div>
+                    <div className="plain-text">
+                        <div>We're delighted to</div>
+                        <div>have you here. If you</div>
+                        <div>need any assistance,</div>
+                        <div>feel free to reach out.</div>
+                    </div>
+                </div>
+                {/* Форма регистрации */}
+                <form className='signUp form hide'>
+                    <h1 className='main-text'>Sign up</h1>
+                    <div className="row">
+                        <input type='text' id='login-input' name='login' placeholder='' required />
+                        <label htmlFor="login-input">Login</label>
+                    </div>
+                    <div className='row'>
+                        <input id='password-input' name='password' placeholder='' required
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => {setPassword(e.target.value)}} />
+                        <label htmlFor="password-input">
+                            Password</label>
+                        <img alt="" id='password-visibility-control' onClick={passwordVisibilityControl}
+                            src={ showPassword ? visibility_icon : visibility_off_icon} />
+                    </div>
+                    <button id='log-in-btn'>Login</button>
+                    <div>
+                        <div className='transition-hint'>
+                            Don't have an account?</div>
+                        <div className='transition-link' id='go-to-registration' onClick={ () => goOverTransition() }>
+                            Sign up</div>
+                    </div>
+                </form>
             </div>
         </div>
     );
