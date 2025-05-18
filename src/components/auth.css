@@ -1,0 +1,212 @@
+:root {
+    --input-width: 200px;
+    --input-height: 28px;
+    --input-padding: 20px;
+    --default-color: #e3e3e3;
+    --active-color: #34d1d1;
+    --color-by-hover: #354b59;
+}
+
+* {
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  user-select: none; /* Стандартный синтаксис */
+}
+
+.mainground {
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+}
+
+.mainground.auth {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background-color: #031926;
+}
+
+.auth-context {
+    position: relative;
+    width: 700px; height: 400px;
+    background-color: #031927;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 12px 10px rgba(52, 209, 209, 0.2);
+
+    display: flex;
+    align-items: center;
+}
+
+h1.main-text {
+    color: var(--default-color);
+}
+
+.context-rect {
+    position: absolute;
+    top: -90px; left: 360px;
+    width: 600px; height: 550px;
+    background: linear-gradient(to left, #34d1d1, #0ca9a9);
+    /* transform: rotate(-10deg); */
+    transform: rotate(-10deg);
+}
+
+.animate-to-registration {
+    animation-name: go-over-to-registration-anim;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes go-over-to-registration-anim {
+    to {
+        left: -180px;
+        transform: rotate();
+    }
+}
+
+.form {
+    width: 400px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 20px;
+}
+
+.meeting {
+    position: absolute;
+    display: flex; flex-direction: column;
+    align-items: end; justify-content: center;
+    width: 300px;
+    padding-right: 50px;
+    color: #fff;
+}
+
+.login.meeting {
+    right: 0;
+}
+
+.row {
+    position: relative;
+    width: var(--input-width);
+    display: flex; justify-content: end;
+}
+
+.row input {
+    background-color: #031927;
+    outline: none;
+    width: calc(var(--input-width) - var(--input-padding) * 2);
+    height: var(--input-height);
+    padding: 0 var(--input-padding) 0 var(--input-padding);
+    border: 1.6px solid var(--default-color);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    color: var(--default-color);
+
+    &:focus {
+        border-color: var(--active-color);
+        color: var(--active-color);
+
+        & + label {
+            transform: translateY(-15px);
+            color: var(--active-color);
+            background-color: #031927;
+        }
+    }
+
+    &:not(&:placeholder-shown) {
+        & + label {
+            transform: translateY(-15px);
+            background-color: #031927;
+        }
+    }
+}
+
+.row label {
+    background-color: transparent;
+    position: absolute;
+    top: 3px;
+    left: 30px;
+    transition: all 0.3s ease;
+    cursor: text;
+    padding: 0 4px;
+    font-size: 15px;
+    color: var(--default-color);
+}
+
+/* Кнопка возврата назад (домой) */
+.back-button {
+    position: absolute;
+    top: 6px; left: 4px;
+    cursor: pointer;
+    border-radius: 100%;
+    transition:
+        background-color 0.5s ease-in,
+        padding 0.2s ease-in,
+        margin 0.2s ease-in;
+    padding: 1px 2px; /* 6px 10px 4px 8px */
+    margin: 5px 8px 3px 6px;
+    
+    &:hover {
+        background-color: var(--color-by-hover);
+        margin: 0;
+        padding: 6px 10px 4px 8px;
+        border-radius: 8px;
+        opacity: var(--opacity-by-hover);
+    }
+}
+
+/* Кнопка входа */
+#log-in-btn {
+    background-color: #0ca9a9;
+    padding: 6px 30px;
+    cursor: pointer;
+    border: 0px solid black;
+    border-radius: 100vw;
+    color: #fff;
+    transition: all 0.2s ease;
+    border: 1px solid var(--active-color);
+    margin-left: 100px;
+
+    &:hover {
+        box-shadow: 0px 0px 20px 1px rgba(52, 209, 209, 0.2);
+    }
+}
+
+/* Кнопка для скрытия/показа пароля */
+#password-visibility-control {
+    position: absolute;
+    top: 3.5px; right: 2px;
+    width: 22px;
+    cursor: pointer;
+    border-radius: 100%;
+    padding: 1px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: var(--color-by-hover);
+    }
+}
+
+/* Главный текст элемента meeting */
+.login.meeting .main-text {
+    font-size: 30px;
+    text-align: end;
+}
+
+.login.meeting .plain-text {
+    margin-top: 20px;
+    margin-right: 20px;
+    text-align: end;
+}
+
+.transition-hint {
+    color: #e3e3e3;
+}
+
+.transition-link {
+    color: aqua;
+    cursor: pointer;
+}
