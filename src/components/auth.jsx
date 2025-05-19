@@ -4,7 +4,7 @@ import back_icon from '../resources/back_icon.svg';
 import visibility_icon from '../resources/visibility_icon.svg';
 import visibility_off_icon from '../resources/visibility_off_icon.svg';
 
-function Login() {
+function Auth(props) {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLogInMode, setIsLogInMode] = useState(true);
@@ -40,11 +40,18 @@ function Login() {
         initialized = true;
     }
     
-    function goOverTransition() {
+    async function goOverTransition() {
         tryInit();
         setIsLogInMode(!isLogInMode);
         if (contextRect.classList.contains(rectStateSignUp)) {
             contextRect.classList.remove(rectStateSignUp);
+
+            // Установка задержки перед применением перехода
+            signUpMeeting.style.transitionDelay = '0';
+            signUpForm.style.transitionDelay = '0';
+
+            loginMeeting.style.transitionDelay = '2.3s';
+            loginForm.style.transitionDelay = '2.3s';
 
             signUpMeeting.style.display = 'none';
             signUpForm.style.display = 'none';
@@ -53,6 +60,13 @@ function Login() {
             loginForm.style.display = 'flex';
         } else {
             contextRect.classList.add(rectStateSignUp);
+
+            // Установка задержки перед применением перехода
+            loginMeeting.style.transitionDelay = '0';
+            loginForm.style.transitionDelay = '0';
+
+            signUpMeeting.style.transitionDelay = '2.3s';
+            signUpForm.style.transitionDelay = '2.3s';
             
             signUpMeeting.style.display = 'flex';
             signUpForm.style.display = 'flex';
@@ -66,11 +80,6 @@ function Login() {
     return (
         <div className='mainground auth'>
             <div className="auth-context">
-                {/* Кнопка возврата назад */}
-                <div className='back-button' onClick={() => {window.history.back()}}>
-                    <img src={back_icon} alt="" />
-                </div>
-
                 <div className={`context-rect ${isLogInMode ? '' : 'rect-state-signUp'}`}></div>
                 {/* Форма для входа */}
                 <form className={ `login form ${isLogInMode ? '' : ' hide'}` } onSubmit={ () => console.log('trying login.') }>
@@ -93,16 +102,16 @@ function Login() {
                     <div>
                         <div className='transition-hint'>
                             Don't have an account?</div>
-                        <div className='transition-link' id='go-to-registration' onClick={ () => goOverTransition() }>
+                        <div className='transition-link' id='go-to-sign-up' onClick={ () => goOverTransition() }>
                             Sign up</div>
                     </div>
                 </form>
                 {/* Приветствие пользователя при входе */}
-                <div className="login meeting">
-                    <div className="main-text">
+                <div className={ `login meeting ${ isLogInMode ? '' : 'hide' }` }>
+                    <h1 className="main-text">
                         <div onClick={() => goOverTransition()}>WELCOME</div>
                         <div>BACK!</div>
-                    </div>
+                    </h1>
                     <div className="plain-text">
                         <div>We're happy to have</div>
                         <div>you with us back</div>
@@ -113,9 +122,9 @@ function Login() {
                 </div>
 
                 {/* Приветствие пользователя при регистрации */}
-                <div className='signUp meeting hide'>
+                <div className={ `signUp meeting ${ !isLogInMode ? '' : 'hide' }`}>
                     <div className="main-text">
-                        <div>WELCOME!</div>
+                        <h1>WELCOME!</h1>
                     </div>
                     <div className="plain-text">
                         <div>We're delighted to</div>
@@ -141,17 +150,21 @@ function Login() {
                         <img alt="" id='password-visibility-control' onClick={passwordVisibilityControl}
                             src={ showPassword ? visibility_icon : visibility_off_icon} />
                     </div>
-                    <button id='log-in-btn'>Login</button>
+                    <button id='log-in-btn'>Sign up</button>
                     <div>
                         <div className='transition-hint'>
                             Don't have an account?</div>
-                        <div className='transition-link' id='go-to-registration' onClick={ () => goOverTransition() }>
+                        <div className='transition-link' id='go-to-log-in' onClick={ () => goOverTransition() }>
                             Sign up</div>
                     </div>
                 </form>
+                {/* Кнопка возврата назад */}
+                <div className='back-button' onClick={() => {window.history.back()}}>
+                    <img src={back_icon} alt="" />
+                </div>
             </div>
         </div>
     );
 }
 
-export default Login;
+export default Auth;

@@ -55,7 +55,10 @@ h1.main-text {
     width: 900px; height: 550px;
     background: linear-gradient(to left, #34d1d1, #0ca9a9);
     transform: rotate(-10deg);
-    transition: all 3s ease;
+    /* transition: all 3s ease; */
+    transition:
+        left 3s ease-out,
+        transform 3s ease-in-out;
 }
 
 .rect-state-signUp {
@@ -82,17 +85,22 @@ h1.main-text {
     display: flex; flex-direction: column;
     align-items: end; justify-content: center;
     width: 300px;
-    padding-right: 50px;
     color: #fff;
     transition: all 1s ease;
 }
 
 .login.meeting {
-    right: 0;
+    right: 0; top: 80px;
+    padding-right: 50px; 
 }
 
-.meeting.signUp {
+.signUp.meeting {
     display: none;
+    left: 0; top: 60px;
+    align-items: start;
+    padding-left: 50px;
+    
+    transition-delay: 2.3s;
 }
 
 .row {
@@ -216,4 +224,6 @@ h1.main-text {
 .transition-link {
     color: aqua;
     cursor: pointer;
+    text-align: center;
+    padding-top: 5px;
 }
