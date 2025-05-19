@@ -55,7 +55,7 @@ h1.main-text {
     width: 900px; height: 550px;
     background: linear-gradient(to left, #34d1d1, #0ca9a9);
     transform: rotate(-10deg);
-    transition: all 2s ease;
+    transition: all 3s ease;
 }
 
 .rect-state-signUp {
@@ -73,6 +73,8 @@ h1.main-text {
 
 .form.signUp {
     display: none;
+    position: absolute;
+    right: 0;
 }
 
 .meeting {

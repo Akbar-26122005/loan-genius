@@ -7,7 +7,7 @@ import visibility_off_icon from '../resources/visibility_off_icon.svg';
 function Login() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
+    const [isLogInMode, setIsLogInMode] = useState(true);
     
     function passwordVisibilityControl() {
         if (showPassword)
@@ -21,14 +21,15 @@ function Login() {
     let initialized = false;
     let contextRect = null;
     let loginMeeting = null;
-    let loginForm = null;;
+    let loginForm = null;
     let signUpMeeting = null;
     let signUpForm = null;
     const rectStateSignUp = 'rect-state-signUp';
 
-    function init() {
+    function tryInit() {
         if (initialized) return;
         contextRect = document.querySelector('.context-rect');
+
         //login
         loginMeeting = document.querySelector('.login.meeting');
         loginForm = document.querySelector('.login.form');
@@ -36,45 +37,30 @@ function Login() {
         signUpMeeting = document.querySelector('.signUp.meeting');
         signUpForm = document.querySelector('.signUp.form');
 
-        loginForm.addEventListener('transitionend', () => {
-            loginMeeting.style.display = 'none';
-            loginForm.style.display = 'none';
-        });
-
-        signUpForm.addEventListener('transitionend', () => {
-            signUpMeeting.style.display = 'none';
-            signUpForm.style.display = 'none';
-        });
-
         initialized = true;
     }
     
     function goOverTransition() {
-        init();
+        tryInit();
+        setIsLogInMode(!isLogInMode);
         if (contextRect.classList.contains(rectStateSignUp)) {
             contextRect.classList.remove(rectStateSignUp);
 
+            signUpMeeting.style.display = 'none';
+            signUpForm.style.display = 'none';
+
             loginMeeting.style.display = 'flex';
             loginForm.style.display = 'flex';
-
-            loginMeeting.classList.remove('hide');
-            loginForm.classList.remove('hide');
-
-            signUpMeeting.classList.add('hide');
-            signUpForm.classList.add('hide');
         } else {
             contextRect.classList.add(rectStateSignUp);
-
-            loginMeeting.classList.add('hide');
-            loginForm.classList.add('hide');
-
-            signUpMeeting.classList.remove('hide');
-            signUpForm.classList.remove('hide');
-
-            loginMeeting.style.display = 'flex';
-            loginForm.style.display = 'flex';
-
+            
+            signUpMeeting.style.display = 'flex';
+            signUpForm.style.display = 'flex';
+            
+            loginMeeting.style.display = 'none';
+            loginForm.style.display = 'none';
         }
+        console.log(isLogInMode);
     }
 
     return (
@@ -85,9 +71,9 @@ function Login() {
                     <img src={back_icon} alt="" />
                 </div>
 
-                <div className="context-rect"></div>
+                <div className={`context-rect ${isLogInMode ? '' : 'rect-state-signUp'}`}></div>
                 {/* Форма для входа */}
-                <form className='login form' onSubmit={ () => console.log('trying login.') }>
+                <form className={ `login form ${isLogInMode ? '' : ' hide'}` } onSubmit={ () => console.log('trying login.') }>
                     <h1 className='main-text'>Login</h1>
                     <div className="row">
                         <input type='text' id='login-input' name='login' placeholder='' required />
@@ -114,7 +100,7 @@ function Login() {
                 {/* Приветствие пользователя при входе */}
                 <div className="login meeting">
                     <div className="main-text">
-                        <div>WELCOME</div>
+                        <div onClick={() => goOverTransition()}>WELCOME</div>
                         <div>BACK!</div>
                     </div>
                     <div className="plain-text">
@@ -139,7 +125,7 @@ function Login() {
                     </div>
                 </div>
                 {/* Форма регистрации */}
-                <form className='signUp form hide'>
+                <form className={ `signUp form ${!isLogInMode ? '' : 'hide'}` }>
                     <h1 className='main-text'>Sign up</h1>
                     <div className="row">
                         <input type='text' id='login-input' name='login' placeholder='' required />
