@@ -168,7 +168,7 @@ h1.main-text {
         background-color: var(--color-by-hover);
         margin: 0;
         padding: 6px 10px 4px 8px;
-        border-radius: 8px;
+        border-radius: 12px;
         opacity: var(--opacity-by-hover);
     }
 }
@@ -191,7 +191,7 @@ h1.main-text {
 }
 
 /* Кнопка для скрытия/показа пароля */
-#password-visibility-control {
+.password-visibility-control {
     position: absolute;
     top: 3.5px; right: 2px;
     width: 22px;
@@ -226,4 +226,9 @@ h1.main-text {
     cursor: pointer;
     text-align: center;
     padding-top: 5px;
+}
+
+.navigate-button {
+    padding: 3px 6px;
+    
 }

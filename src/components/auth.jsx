@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './auth.css';
 import back_icon from '../resources/back_icon.svg';
 import visibility_icon from '../resources/visibility_icon.svg';
 import visibility_off_icon from '../resources/visibility_off_icon.svg';
 
-function Auth(props) {
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+function Auth() {
     const [isLogInMode, setIsLogInMode] = useState(true);
+    const [showLogInPassword, setShowLogInPassword] = useState(false);
+    const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+    const [showSignUpRepeatPassword, setShowSignUpRepeatPassword] = useState(false);
+    const navigate = useNavigate();
     
-    function passwordVisibilityControl() {
-        if (showPassword)
-            setShowPassword(false);
-        else {
-            setShowPassword(true);
-        }
-        document.getElementById('password-input').focus();
+    function passwordVisibilityControl(swapFunction, value, focusElement) {
+        swapFunction(!value);
+        document.getElementById(focusElement).focus();
+    }
+
+    function userLogIn() {
+
+    }
+
+    function userSignUp() {
+        
     }
 
     let initialized = false;
@@ -82,21 +89,28 @@ function Auth(props) {
             <div className="auth-context">
                 <div className={`context-rect ${isLogInMode ? '' : 'rect-state-signUp'}`}></div>
                 {/* Форма для входа */}
-                <form className={ `login form ${isLogInMode ? '' : ' hide'}` } onSubmit={ () => console.log('trying login.') }>
+                <form
+                    className={ `login form ${isLogInMode ? '' : ' hide'}` }
+                    onSubmit={userLogIn()}
+                >
                     <h1 className='main-text'>Login</h1>
                     <div className="row">
                         <input type='text' id='login-input' name='login' placeholder='' required />
                         <label htmlFor="login-input">Login</label>
                     </div>
                     <div className='row'>
-                        <input id='password-input' name='password' placeholder='' required
-                            type={showPassword ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => {setPassword(e.target.value)}} />
+                        <input required
+                            id='password-input'
+                            name='password'
+                            placeholder=''
+                            type={showLogInPassword ? 'text' : 'password'}/>
                         <label htmlFor="password-input">
                             Password</label>
-                        <img alt="" id='password-visibility-control' onClick={passwordVisibilityControl}
-                            src={ showPassword ? visibility_icon : visibility_off_icon} />
+                        <img
+                            alt="" id='log-in-password-visibility-control'
+                            className='password-visibility-control'
+                            onClick={() => passwordVisibilityControl(setShowLogInPassword, showLogInPassword, 'log-in-password-visibility-control')}
+                            src={ showLogInPassword ? visibility_icon : visibility_off_icon} />
                     </div>
                     <button id='log-in-btn'>Login</button>
                     <div>
@@ -121,6 +135,10 @@ function Auth(props) {
                     </div>
                 </div>
 
+                {/*  */}
+                {/* Регистрация */}
+                {/*  */}
+
                 {/* Приветствие пользователя при регистрации */}
                 <div className={ `signUp meeting ${ !isLogInMode ? '' : 'hide' }`}>
                     <div className="main-text">
@@ -134,32 +152,55 @@ function Auth(props) {
                     </div>
                 </div>
                 {/* Форма регистрации */}
-                <form className={ `signUp form ${!isLogInMode ? '' : 'hide'}` }>
+                <form
+                    className={ `signUp form ${!isLogInMode ? '' : 'hide'}` }
+                    onSubmit={userSignUp()}
+                >
                     <h1 className='main-text'>Sign up</h1>
                     <div className="row">
-                        <input type='text' id='login-input' name='login' placeholder='' required />
-                        <label htmlFor="login-input">Login</label>
+                        <input type='text' id='r-name-input' name='login' placeholder='' required />
+                        <label htmlFor="r-name-input">name</label>
+                    </div>
+                    <div className="row">
+                        <input type='email' id='r-email-input' name='login' placeholder='' required />
+                        <label htmlFor="r-email-input">email</label>
                     </div>
                     <div className='row'>
-                        <input id='password-input' name='password' placeholder='' required
-                            type={showPassword ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => {setPassword(e.target.value)}} />
-                        <label htmlFor="password-input">
+                        <input required
+                            id='r-password-input'
+                            name='password'
+                            placeholder=''
+                            type={showLogInPassword ? 'text' : 'password'} />
+                        <label htmlFor="r-password-input">
                             Password</label>
-                        <img alt="" id='password-visibility-control' onClick={passwordVisibilityControl}
-                            src={ showPassword ? visibility_icon : visibility_off_icon} />
+                        <img alt="" id='sign-up-password-visibility-control' className='password-visibility-control'
+                            onClick={() => passwordVisibilityControl(setShowSignUpPassword, showSignUpPassword, 'sign-up-password-visibility-control')}
+                            src={ showSignUpPassword ? visibility_icon : visibility_off_icon} />
+                    </div>
+                    <div className='row'>
+                        <input required
+                            id='r-repeat-password-input'
+                            name='r-repeat-password'
+                            placeholder=''
+                            type={showSignUpRepeatPassword ? 'text' : 'password'}
+                        />
+                        <label htmlFor="r-repeat-password-input">
+                            Password</label>
+                        <img alt="" id='sign-up-repeat-password-visibility-control' className='password-visibility-control'
+                            onClick={() => passwordVisibilityControl(setShowSignUpRepeatPassword, showSignUpRepeatPassword, 'sign-up-repeat-password-visibility-control')}
+                            src={ showSignUpRepeatPassword ? visibility_icon : visibility_off_icon} />
                     </div>
                     <button id='log-in-btn'>Sign up</button>
                     <div>
                         <div className='transition-hint'>
                             Don't have an account?</div>
                         <div className='transition-link' id='go-to-log-in' onClick={ () => goOverTransition() }>
-                            Sign up</div>
+                            <div>Sign up</div>
+                        </div>
                     </div>
                 </form>
                 {/* Кнопка возврата назад */}
-                <div className='back-button' onClick={() => {window.history.back()}}>
+                <div className='back-button' onClick={() => {navigate('/', { replace: true })}}>
                     <img src={back_icon} alt="" />
                 </div>
             </div>
