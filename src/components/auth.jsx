@@ -4,6 +4,7 @@ import '../styles/auth.css';
 import back_icon from '../resources/back_icon.svg';
 import visibility_icon from '../resources/visibility_icon.svg';
 import visibility_off_icon from '../resources/visibility_off_icon.svg';
+import getPath from '../config/serverClient';
 
 function Auth() {
     const [isLogInMode, setIsLogInMode] = useState(true);
@@ -135,7 +136,20 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition })
     const [showLogInPassword, setShowLogInPassword] = useState(false);
 
     const userLogIn = async () => {
+        try {
+            const response = await fetch(getPath('/auth/get'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({})
+            })
 
+            const data = await response.json()
+
+            if (!response.ok) throw new Error(data.message)
+        } catch (err) { }
     }
 
     return (
