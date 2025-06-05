@@ -1,5 +1,5 @@
 import React from 'react';
-import './page404.css';
+import '../styles/page404.css';
 import logo from '../resources/logo.svg';
 
 function Page404() {

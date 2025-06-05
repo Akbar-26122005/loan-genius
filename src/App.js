@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Routes>
           <Route path='/' Component={Home} />
-          <Route path='/auth' Component={Auth} />
+          <Route path='/auth/:is_log_in_mode' Component={Auth} />
           <Route path='*' Component={Error404} />
         </Routes>
     </Router>

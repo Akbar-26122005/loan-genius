@@ -1,26 +1,26 @@
 :root {
-    --primary-green: #4CAF50; /* Спокойный зеленый */
+    --primary-green: #4CAF50;   /* Спокойный зеленый */
     --secondary-green: #81C784; /* Светло-зеленый */
-    --dark-green: #388E3C; /* Для акцентов */
-    --background: #F5F9F5; /* Очень светлый зелёный фон */
+    --dark-green: #388E3C;      /* Для акцентов */
+    --background: #F5F9F5;      /* Очень светлый зелёный фон */
 }
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: var(--background);
+    background-color: #96a0aa;
     margin: 0;
     color: #333;
     height: 110vh;
 }
 
 header {
-    background-color: white;
+    background-color: #25394b;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     padding: 1rem 0;
     position: relative;
 }
 
-.navigate-element {
+/* .navigate-element {
     padding: 2px 4px;
     position: absolute;
     top: 20px; right: 30px;
@@ -34,10 +34,34 @@ header {
         color: #345678;
         font-size: 20px;
     }
+} */
+
+.navigate-panel {
+    padding: 2px 4px;
+    position: absolute;
+    top: 24px; right: 20px;
+    color: #ededed;
+    font-size: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.navigate-panel > div {
+    padding: 8px 24px;
+    cursor: pointer;
+
+    &:hover {
+        color: #cdd;
+        border-color: #cdd;
+    }
+}
+
+.navigate-panel > .sign-up {
+    border: 1px solid #ededed;
 }
 
 #main-headline {
-    color: var(--primary-green);
+    color: #fff;
     font-size: 40px;
 }
 
@@ -48,7 +72,7 @@ header {
 }
 
 .hero {
-    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+    background: linear-gradient(135deg, #031927, #031927);
     color: white;
     padding: 3rem 0;
     text-align: center;
@@ -56,7 +80,7 @@ header {
 }
 
 .cta-button {
-    background-color: var(--dark-green);
+    background-color: #0ca9a9; /* var(--dark-green) */
     color: white;
     border: none;
     padding: 12px 30px;
@@ -67,7 +91,7 @@ header {
 }
 
 .cta-button:hover {
-    background-color: #2E7D32;
+    background-color: #34d1d1; /* #2E7D32 */
     transform: translateY(-2px);
 }
 
@@ -76,15 +100,23 @@ header {
     justify-content: space-around;
     flex-wrap: wrap;
     margin: 3rem 0;
+    background: #25394b;
+    padding: 40px 0;
+    border-radius: 30px;
 }
 
 .feature-card {
-    background: white;
+    background: #ccd5e2;
     border-radius: 10px;
     padding: 2rem;
     width: 250px;
     margin: 1rem;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     text-align: center;
-    border-top: 4px solid var(--primary-green);
+    border-top: 4px solid #34d1d1;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+    }
 }

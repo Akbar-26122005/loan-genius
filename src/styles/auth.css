@@ -8,10 +8,10 @@
 }
 
 * {
-  -webkit-user-select: none; /* Chrome/Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE/Edge */
-  user-select: none; /* Стандартный синтаксис */
+  -webkit-user-select: none; /* Chrome/Safari         */
+  -moz-user-select: none;    /* Firefox               */
+  -ms-user-select: none;     /* IE/Edge               */
+  user-select: none;         /* Стандартный синтаксис */
 }
 
 .hide {
@@ -35,7 +35,7 @@
 
 .auth-context {
     position: relative;
-    width: 700px; height: 400px;
+    width: 700px; height: 470px;
     background-color: #031927;
     border-radius: 14px;
     overflow: hidden;
@@ -52,18 +52,19 @@ h1.main-text {
 .context-rect {
     position: absolute;
     top: -90px; left: 360px;
-    width: 900px; height: 550px;
+    width: 900px; height: 600px;
     background: linear-gradient(to left, #34d1d1, #0ca9a9);
-    transform: rotate(-10deg);
+    transform: rotate(-6deg);
     /* transition: all 3s ease; */
     transition:
         left 3s ease-out,
         transform 3s ease-in-out;
+    transition-delay: 0.1s;
 }
 
 .rect-state-signUp {
     left: -550px;
-    transform: rotate(10deg);
+    transform: rotate(6deg);
 }
 
 .form {
@@ -89,18 +90,16 @@ h1.main-text {
     transition: all 1s ease;
 }
 
-.login.meeting {
+.meeting.login {
     right: 0; top: 80px;
     padding-right: 50px; 
 }
 
-.signUp.meeting {
+.meeting.signUp {
     display: none;
     left: 0; top: 60px;
     align-items: start;
     padding-left: 50px;
-    
-    transition-delay: 2.3s;
 }
 
 .row {
