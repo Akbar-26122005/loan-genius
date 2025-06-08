@@ -1,12 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/home.css';
+import getPath from '../config/serverClient';
 
 function Home({ user, setUser }) {
     const navigate = useNavigate();
 
     const handleNavigate = isLogInMode => {
         navigate(`/auth`);
+    }
+
+    const navigateToProfile = () => {
+        navigate('/profile')
+    }
+
+    const handleLogOut = async () => {
+        try {
+            const response = await fetch(getPath('/auth/log-out'), {
+                method: 'GET'
+                ,headers: {
+                    'Content-Type': 'application/json'
+                }
+                ,credentials: 'include'
+            })
+    
+            const data = await response.json()
+    
+            if (!response.ok || !data.success)
+                throw new Error(data.message)
+
+            window.location.reload()
+        } catch (err) { }
     }
 
     return (
@@ -21,8 +45,8 @@ function Home({ user, setUser }) {
                             <div className="log-in" onClick={ () => handleNavigate() }>Log in</div>
                         </div>
                         :<div className="navigate-panel">
-                            <div>{ user.first_name }</div>
-                            <div>log out</div>
+                            <div onClick={ navigateToProfile }>{ user.first_name }</div>
+                            <div onClick={handleLogOut}>log out</div>
                         </div>
                     }
                 </nav>

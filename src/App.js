@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Home from './components/home';
 import Auth from './components/auth';
+import Profile from './components/profile';
+import Products from './components/products'
 import Error404 from './components/page404';
 import getPath from './config/serverClient';
 
@@ -49,6 +51,8 @@ function App() {
         <Routes>
             <Route path='/' element={<Home user={ user } setUser={ setUser } />} />
             <Route path='/auth' element={<Auth user={ user } setUser={ setUser } />} />
+            <Route path='/profile' element={ <Profile user={ user } setUser={ setUser } /> } />
+            <Route path='/products' element={ <Products user={ user } /> } />
             <Route path='*' element={<Error404 />} />
           </Routes>
       </Router>
