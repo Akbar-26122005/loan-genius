@@ -1,6 +1,6 @@
 :root {
-    --input-width: 200px;
-    --input-height: 28px;
+    --input-width: 240px;
+    --input-height: 32px;
     --input-padding: 20px;
     --default-color: #e3e3e3;
     --active-color: #34d1d1;
@@ -19,7 +19,8 @@
 }
 
 .mainground {
-    min-height: 100%;
+    width: 100vw;
+    height: 100vh;
     position: absolute;
     top: 0;
     left: 0;
@@ -35,7 +36,7 @@
 
 .auth-context {
     position: relative;
-    width: 700px; height: 470px;
+    width: 750px; height: 670px;
     background-color: #031927;
     border-radius: 14px;
     overflow: hidden;
@@ -51,8 +52,8 @@ h1.main-text {
 
 .context-rect {
     position: absolute;
-    top: -90px; left: 360px;
-    width: 900px; height: 600px;
+    top: -90px; left: 380px;
+    width: 900px; height: 800px;
     background: linear-gradient(to left, #34d1d1, #0ca9a9);
     transform: rotate(-6deg);
     /* transition: all 3s ease; */
@@ -63,7 +64,7 @@ h1.main-text {
 }
 
 .rect-state-signUp {
-    left: -550px;
+    left: -560px;
     transform: rotate(6deg);
 }
 
@@ -91,13 +92,13 @@ h1.main-text {
 }
 
 .meeting.login {
-    right: 0; top: 80px;
+    right: 0; top: 120px;
     padding-right: 50px; 
 }
 
 .meeting.signUp {
     display: none;
-    left: 0; top: 60px;
+    left: 0; top: 120px;
     align-items: start;
     padding-left: 50px;
 }
@@ -124,7 +125,7 @@ h1.main-text {
         color: var(--active-color);
 
         & + label {
-            transform: translateY(-15px);
+            transform: translateY(-18px);
             color: var(--active-color);
             background-color: #031927;
         }
@@ -132,7 +133,7 @@ h1.main-text {
 
     &:not(&:placeholder-shown) {
         & + label {
-            transform: translateY(-15px);
+            transform: translateY(-18px);
             background-color: #031927;
         }
     }
@@ -141,7 +142,7 @@ h1.main-text {
 .row label {
     background-color: transparent;
     position: absolute;
-    top: 3px;
+    top: 5px;
     left: 30px;
     transition: all 0.3s ease;
     cursor: text;
@@ -230,4 +231,11 @@ h1.main-text {
 .navigate-button {
     padding: 3px 6px;
     
+}
+
+.message {
+    color: darkred;
+    font-size: 18px;
+    position: fixed;
+    right: 20px; bottom: 20px;
 }

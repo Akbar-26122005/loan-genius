@@ -1,16 +1,9 @@
-:root {
-    --primary-green: #4CAF50;   /* Спокойный зеленый */
-    --secondary-green: #81C784; /* Светло-зеленый */
-    --dark-green: #388E3C;      /* Для акцентов */
-    --background: #F5F9F5;      /* Очень светлый зелёный фон */
-}
-
 body {
     font-family: 'Arial', sans-serif;
     background-color: #96a0aa;
     margin: 0;
     color: #333;
-    height: 110vh;
+    height: 100vh;
 }
 
 header {

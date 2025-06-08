@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/auth.css';
 import back_icon from '../resources/back_icon.svg';
@@ -6,9 +6,23 @@ import visibility_icon from '../resources/visibility_icon.svg';
 import visibility_off_icon from '../resources/visibility_off_icon.svg';
 import getPath from '../config/serverClient';
 
-function Auth() {
+export default function Auth({ user, setUser }) {
     const [isLogInMode, setIsLogInMode] = useState(true);
+    const [message, setMessage] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user !== null)
+            window.location.replace('../')
+        console.log(user)
+    }, [])
+
+    function showMessage(msg) {
+        setMessage(msg)
+        setTimeout(() => {
+            setMessage(null)
+        }, 5000)
+    }
     
     function passwordVisibilityControl(swapFunction, value, focusElement) {
         swapFunction(!value);
@@ -83,6 +97,9 @@ function Auth() {
                     isLogInMode={ isLogInMode }
                     goOverTransition={ goOverTransition }
                     passwordVisibilityControl={ passwordVisibilityControl }
+                    showMessage={ showMessage }
+                    user={ user }
+                    setUser={ setUser }
                 />
                 {/* Приветствие пользователя при входе */}
                 <div className={ `login meeting ${ isLogInMode ? '' : 'hide' }` }>
@@ -120,54 +137,75 @@ function Auth() {
                     isLogInMode={ isLogInMode }
                     goOverTransition={ goOverTransition }
                     passwordVisibilityControl={ passwordVisibilityControl }
+                    showMessage={ showMessage }
+                    user={ user }
+                    setUser={ setUser }
                 />
                 {/* Кнопка возврата назад */}
                 <div className='back-button' onClick={() => {navigate('/', { replace: true })}}>
                     <img src={back_icon} alt="" />
                 </div>
             </div>
+            <div className="message no-copy">{ message }</div>
         </div>
     );
 }
 
-export default Auth;
-
-function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition }) {
+function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, showMessage, user, setUser }) {
     const [showLogInPassword, setShowLogInPassword] = useState(false);
 
-    const userLogIn = async () => {
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+
+    const userLogIn = async e => {
+        e.preventDefault();
         try {
-            const response = await fetch(getPath('/auth/get'), {
+            const response = await fetch(getPath('/auth/log-in'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include',
-                body: JSON.stringify({})
+                body: JSON.stringify({
+                    login: login
+                    ,password: password
+                })
             })
 
             const data = await response.json()
 
-            if (!response.ok) throw new Error(data.message)
-        } catch (err) { }
+            if (!response.ok || !data.success)
+                throw new Error(data.message)
+
+            setUser(data.user)
+            window.location.replace('../')
+        } catch (err) {
+            showMessage(err.message)
+        }
     }
 
     return (
         <form
             className={ `login form ${isLogInMode ? '' : ' hide'}` }
-            onSubmit={userLogIn()}
+            onSubmit={ userLogIn }
         >
             <h1 className='main-text'>Login</h1>
             <div className="row">
-                <input type='text' id='login-input' name='login' placeholder='' required />
+                <input required
+                    type='text'
+                    id='login-input'
+                    placeholder=''
+                    value={ login }
+                    onChange={ e => setLogin(e.target.value) } />
                 <label htmlFor="login-input">Login</label>
             </div>
             <div className='row'>
                 <input required
+                    type={showLogInPassword ? 'text' : 'password'}
                     id='password-input'
-                    name='password'
                     placeholder=''
-                    type={showLogInPassword ? 'text' : 'password'}/>
+                    value={ password }
+                    onChange={ e => setPassword(e.target.value) } />
                 <label htmlFor="password-input">
                     Password</label>
                 <img
@@ -187,26 +225,121 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition })
     );
 }
 
-function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition }) {
+function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, showMessage, user, setUser }) {
     const [showSignUpPassword, setShowSignUpPassword] = useState(false);
     const [showSignUpRepeatPassword, setShowSignUpRepeatPassword] = useState(false);
-    
-    const userSignUp = async () => {
 
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [middleName, setMiddleName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('+7');
+    const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+    const [birthDate, setBirthDate] = useState(null);
+    
+    const userSignUp = async e => {
+        e.preventDefault();
+
+        if (password !== repeatPassword) {
+            showMessage('The password and the repeated password do not match')
+            return
+        }
+
+        try {
+            const response = await fetch(getPath('/auth/sign-up'), {
+                method: 'POST'
+                ,headers: { 'Content-Type': 'application/json' }
+                ,credentials: 'include'
+                ,body: JSON.stringify({
+                    first_name: firstName
+                    ,last_name: lastName
+                    ,middle_name: middleName
+                    ,email: email
+                    ,phone_number: phoneNumber
+                    ,password: password
+                    ,birth_date: birthDate
+                })
+            })
+
+            const data = await response.json()
+
+            if (!response.ok)
+                throw new Error(data.message)
+
+            if (!data.success)
+                throw new Error('Failed to register')
+
+            setUser(data.user)
+            window.location.replace('../')
+        } catch (err) {
+            showMessage(err.message)
+        }
     }
+
+    const handleChangePhoneNumber = e => {
+        let value = e.target.value;
+        
+        // Запрещаем удаление +7
+        if (!value.startsWith('+7')) {
+        value = '+7' + value.replace(/[^\d]/g, '');
+        }
+        
+        // Ограничиваем длину (например, 12 символов: +7XXXXXXXXXX)
+        if (value.length <= 12) {
+            setPhoneNumber(value);
+        }
+    };
 
     return (
         <form
             className={ `signUp form ${!isLogInMode ? '' : 'hide'}` }
-            onSubmit={userSignUp()}
-        >
+            onSubmit={ userSignUp } >
             <h1 className='main-text'>Sign up</h1>
             <div className="row">
-                <input type='text' id='r-name-input' name='login' placeholder='' required />
-                <label htmlFor="r-name-input">name</label>
+                <input required
+                    type='text'
+                    id='first-name-input'
+                    placeholder=''
+                    value={ firstName }
+                    onChange={ e => setFirstName(e.target.value) } />
+                <label htmlFor="first-name-input">first name</label>
             </div>
             <div className="row">
-                <input type='email' id='r-email-input' name='login' placeholder='' required />
+                <input required
+                    type='text'
+                    id='last-name-input'
+                    placeholder=''
+                    value={ lastName }
+                    onChange={ e => setLastName(e.target.value) } />
+                <label htmlFor="last-name-input">last name</label>
+            </div>
+            <div className="row">
+                <input
+                    type='text'
+                    id='middle-name-input'
+                    placeholder=''
+                    value={ middleName }
+                    onChange={ e => setMiddleName(e.target.value) } />
+                <label htmlFor="middle-name-input">middle name</label>
+            </div>
+            <div className="row">
+                <input required
+                    type='tel'
+                    id='phone-number-input'
+                    placeholder=''
+                    value={ phoneNumber }
+                    onChange={ handleChangePhoneNumber }
+                    minLength={ 12 }/>
+                <label htmlFor="phone-number-input">phone number</label>
+            </div>
+            <div className="row">
+                <input required
+                    type='email'
+                    id='r-email-input'
+                    placeholder=''
+                    value={ email}
+                    onChange={ e => setEmail(e.target.value) } />
                 <label htmlFor="r-email-input">email</label>
             </div>
             <div className='row'>
@@ -214,9 +347,11 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition }
                     id='r-password-input'
                     name='password'
                     placeholder=''
-                    type={showSignUpPassword ? 'text' : 'password'} />
-                <label htmlFor="r-password-input">
-                    Password</label>
+                    type={showSignUpPassword ? 'text' : 'password'}
+                    value={ password }
+                    onChange={ e => setPassword(e.target.value) }
+                    minLength={ 8 } />
+                <label htmlFor="r-password-input">password</label>
                 <img alt="" id='sign-up-password-visibility-control' className='password-visibility-control'
                     onClick={() => passwordVisibilityControl(setShowSignUpPassword, showSignUpPassword, 'sign-up-password-visibility-control')}
                     src={ showSignUpPassword ? visibility_icon : visibility_off_icon} />
@@ -227,12 +362,21 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition }
                     name='r-repeat-password'
                     placeholder=''
                     type={showSignUpRepeatPassword ? 'text' : 'password'}
-                />
-                <label htmlFor="r-repeat-password-input">
-                    Password</label>
+                    value={ repeatPassword }
+                    onChange={ e => setRepeatPassword(e.target.value) } />
+                <label htmlFor="r-repeat-password-input">repeat password</label>
                 <img alt="" id='sign-up-repeat-password-visibility-control' className='password-visibility-control'
                     onClick={() => passwordVisibilityControl(setShowSignUpRepeatPassword, showSignUpRepeatPassword, 'sign-up-repeat-password-visibility-control')}
                     src={ showSignUpRepeatPassword ? visibility_icon : visibility_off_icon} />
+            </div>
+            <div className="row">
+                <input required
+                    type='date'
+                    id='r-date-input'
+                    placeholder=''
+                    value={ birthDate }
+                    onChange={ e => setBirthDate(e.target.value) } />
+                <label htmlFor="r-email-input">email</label>
             </div>
             <button id='log-in-btn'>Sign up</button>
             <div>
