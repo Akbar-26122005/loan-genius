@@ -13,7 +13,7 @@ export default function Auth({ user, setUser }) {
 
     useEffect(() => {
         if (user !== null)
-            window.location.replace('../')
+            window.location.replace('/profile')
         console.log(user)
     }, [])
 
@@ -89,7 +89,7 @@ export default function Auth({ user, setUser }) {
     }
 
     return (
-        <div className='mainground auth'>
+        <div className='Auth'>
             <div className="auth-context">
                 <div className={`context-rect ${isLogInMode ? '' : 'rect-state-signUp'}`}></div>
                 {/* Форма для входа */}
@@ -178,7 +178,7 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
                 throw new Error(data.message)
 
             setUser(data.user)
-            window.location.replace('../')
+            window.location.replace('/profile')
         } catch (err) {
             showMessage(err.message)
         }
@@ -271,7 +271,7 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                 throw new Error('Failed to register')
 
             setUser(data.user)
-            window.location.replace('../')
+            window.location.replace('/profile')
         } catch (err) {
             showMessage(err.message)
         }

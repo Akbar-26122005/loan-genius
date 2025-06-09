@@ -33,30 +33,21 @@ function Home({ user, setUser }) {
         } catch (err) { }
     }
 
+    const handleCtaClick = () => {
+        if (user === null)
+            navigate('/auth')
+        else
+        navigate('/profile')
+    }
+
     return (
-        <div className='mainguard auth'>
-            <header>
-                <div className="container">
-                    <h1 id='main-headline'>Loan genius</h1>
-                </div>
-                <nav>
-                    {user === null
-                        ?<div className="navigate-panel">
-                            <div className="log-in" onClick={ () => handleNavigate() }>Log in</div>
-                        </div>
-                        :<div className="navigate-panel">
-                            <div onClick={ navigateToProfile }>{ user.first_name }</div>
-                            <div onClick={handleLogOut}>log out</div>
-                        </div>
-                    }
-                </nav>
-            </header>
-            
+        <div className='Home'>
+
             <section className="hero">
                 <div className="container">
                     <h2>A loan for any purpose up to 1 000 000₽</h2>
                     <p>Approval in 5 minutes | The rate starts from 5.9%</p>
-                    <button className="cta-button">Submit an application</button>
+                    <button className="cta-button" onClick={ handleCtaClick }>Submit an application</button>
                 </div>
             </section>
             

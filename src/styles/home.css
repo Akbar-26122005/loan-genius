@@ -1,64 +1,18 @@
-/* .navigate-element {
-    padding: 2px 4px;
-    position: absolute;
-    top: 20px; right: 30px;
-    color: #000;
-    font-size: 15px;
-    display: flex;
-
-    &:before {
-        font-family: "Material Icons";
-        content: "person";
-        color: #345678;
-        font-size: 20px;
-    }
-} */
-
-.navigate-panel {
-    padding: 2px 4px;
-    position: absolute;
-    top: 24px; right: 20px;
-    color: #ededed;
-    font-size: 15px;
-    display: flex;
-    gap: 10px;
-}
-
-.navigate-panel > div {
-    padding: 8px 12px;
-    cursor: pointer;
-
-    &:hover {
-        color: #cdd;
-        border-color: #cdd;
-    }
-}
-
-.navigate-panel > .sign-up {
-    border: 1px solid #ededed;
-}
-
-#main-headline {
-    color: #fff;
-    font-size: 40px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
 .hero {
     background: linear-gradient(135deg, #031927, #031927);
     color: white;
     padding: 3rem 0;
     text-align: center;
     border-radius: 0 0 20px 20px;
+    width: 100vw;
+}
+
+.Home .container {
+    display: block;
 }
 
 .cta-button {
-    background-color: #0ca9a9; /* var(--dark-green) */
+    background-color: #0ca9a9;
     color: white;
     border: none;
     padding: 12px 30px;
@@ -69,7 +23,7 @@
 }
 
 .cta-button:hover {
-    background-color: #34d1d1; /* #2E7D32 */
+    background-color: #34d1d1;
     transform: translateY(-2px);
 }
 

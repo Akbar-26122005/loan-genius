@@ -18,7 +18,7 @@
     opacity: 0;
 }
 
-.mainground {
+.Auth {
     width: 100vw;
     height: 100vh;
     position: absolute;
@@ -26,9 +26,7 @@
     left: 0;
     right: 0;
     background-color: #fff;
-}
 
-.mainground.auth {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     background-color: #031926;
@@ -109,7 +107,7 @@ h1.main-text {
     display: flex; justify-content: end;
 }
 
-.row input {
+.Auth .row input {
     background-color: #031927;
     outline: none;
     width: calc(var(--input-width) - var(--input-padding) * 2);
@@ -139,7 +137,7 @@ h1.main-text {
     }
 }
 
-.row label {
+.Auth .row label {
     background-color: transparent;
     position: absolute;
     top: 5px;

@@ -1,0 +1,19 @@
+.navigate-panel {
+    padding: 2px 4px;
+    position: absolute;
+    top: 24px; right: 20px;
+    color: #ededed;
+    font-size: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.navigate-panel > div {
+    padding: 8px 12px;
+    cursor: pointer;
+
+    &:hover {
+        color: #cdd;
+        border-color: #cdd;
+    }
+}
