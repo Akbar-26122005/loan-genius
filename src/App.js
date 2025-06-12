@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
-import Home from './components/home';
-import Auth from './components/auth';
-import Profile from './components/profile';
-import Products from './components/products'
-import Error404 from './components/page404';
+import Home from './pages/home';
+import Auth from './pages/auth';
+import Profile from './pages/profile';
+import Products from './pages/products'
+import Error404 from './pages/page404';
 import ControlPanel from './components/controlPanel';
-import Credits from './components/credits'
-import Loan from './components/loan'
+import Credits from './pages/credits'
+import Loan from './pages/loan'
 import getPath from './config/serverClient';
 import { MessageSystem } from './components/messages';
+import FloatingMenu from './components/floatingMenu';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -69,6 +70,11 @@ function App() {
       </Router>
 
       <MessageSystem />
+      {
+        !window.location.href.endsWith('/')
+        && !window.location.href.endsWith('/auth')
+        && <FloatingMenu />
+      }
     </div>
   );
 }

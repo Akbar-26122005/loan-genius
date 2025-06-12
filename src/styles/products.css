@@ -1,14 +1,15 @@
 .Products {
-    background: darkgray;
     width: 700px; min-height: 600px;
-    box-shadow: 4px 4px 10px 4px rgba(0, 0, 0, 0.5);
-    border-radius: 18px;
-    gap: 10px;
     margin-top: 60px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
 }
 
 .Product {
-    
+    background: red;
+    border-radius: 10px;
+    margin: 20px;
+    height: 200px;
+    box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.4);
 }

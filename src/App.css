@@ -1,6 +1,11 @@
+:root {
+    --back-color: #031927;
+    --fore-color: #eee;
+}
+
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #96a0aa;
+    background-color: #1F2937;
     margin: 0; padding: 0;
     color: #333;
     height: 100vh;

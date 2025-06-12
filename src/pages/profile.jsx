@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { showMessage } from "./messages"
-import '../styles/profile.css'
+import { showMessage } from "../components/messages"
+import FloatingMenu from '../components/floatingMenu'
 import getPath from "../config/serverClient"
-import menu_icon from '../images/menu_icon.svg'
+import '../styles/profile.css'
 
 export default function Profile({ user }) {
-    const navigate = useNavigate()
     const [reload, setReload] = useState(false)
     const [isMenuShow, setIsMenuShow] = useState(false)
 
@@ -119,6 +118,7 @@ export default function Profile({ user }) {
     };
 
     const handleSaveUserData = async () => {
+        if (!userDataChanged) return
         try {
             const response = await fetch(getPath('/auth/update'), {
                 method: 'POST'
@@ -149,6 +149,7 @@ export default function Profile({ user }) {
 
     // Создание новых паспортных данных
     const handleCreatePassportData = async () => {
+        if (!passportDataChanged) return
         try {
             const response = await fetch(getPath('/passport/create'), {
                 method: 'POST'
@@ -179,6 +180,7 @@ export default function Profile({ user }) {
     }
 
     const handleSavePassportData = async () => {
+        if (!passportDataChanged) return
         try {
             const response = await fetch(getPath('/passport/update'), {
                 method: 'POST'
@@ -209,157 +211,141 @@ export default function Profile({ user }) {
         }
     }
 
-    const handleShowMenu = () => {
-        setIsMenuShow(prev => !prev)
-    }
-
     if (!user)
         window.location.replace('/')
 
     return (
         <div className="Profile">
             <h1>User profile</h1>
-            <div className="rows no-copy user"> {/* Данные пользователя */}
-                <h2>User data</h2>
-                <div className="row"> {/* Email */}
-                    <label>Email</label>
-                    <input required
-                        type="text"
-                        value={ email }
-                        onChange={ e => setEmail(e.target.value) }
-                    />
+            <div className="columns">
+                <div className="rows no-copy user"> {/* Данные пользователя */}
+                    <h2>User data</h2>
+                    <div className="row"> {/* Email */}
+                        <label>Email</label>
+                        <input required
+                            type="text"
+                            value={ email }
+                            onChange={ e => setEmail(e.target.value) }
+                        />
+                    </div>
+                    <div className="row"> {/* Phone number */}
+                        <label>Phone number</label>
+                        <input required
+                            type="text"
+                            value={ phoneNumber }
+                            onChange={ e => setPhoneNumber(e.target.value) }
+                        />
+                    </div>
+                    <div className="row"> {/* First name */}
+                        <label>First name</label>
+                        <input required
+                            type="text"
+                            value={ firstName }
+                            onChange={ e => setFirstName(e.target.value) }
+                        />
+                    </div>
+                    <div className="row"> {/* Last name */}
+                        <label>Last name</label>
+                        <input required
+                            type="text"
+                            value={ lastName }
+                            onChange={ e => setLastName(e.target.value) }
+                        />
+                    </div>
+                    <div className="row"> {/* Middle name */}
+                        <label>Middle name</label>
+                        <input
+                            type="text"
+                            value={ middleName }
+                            onChange={ e => setMiddleName(e.target.value) }
+                        />
+                    </div>
+                    <div className="tools">
+                        <div
+                            className={ `tool cancel ${ userDataChanged && 'active' }` }
+                            onClick={ handleCancelUserData }
+                        > Cancel </div>
+                        <div
+                            className={ `tool save ${ userDataChanged && 'active' }` }
+                            onClick={ handleSaveUserData }
+                        > Save </div>
+                    </div>
                 </div>
-                <div className="row"> {/* Phone number */}
-                    <label>Phone number</label>
-                    <input required
-                        type="text"
-                        value={ phoneNumber }
-                        onChange={ e => setPhoneNumber(e.target.value) }
-                    />
-                </div>
-                <div className="row"> {/* First name */}
-                    <label>First name</label>
-                    <input required
-                        type="text"
-                        value={ firstName }
-                        onChange={ e => setFirstName(e.target.value) }
-                    />
-                </div>
-                <div className="row"> {/* Last name */}
-                    <label>Last name</label>
-                    <input required
-                        type="text"
-                        value={ lastName }
-                        onChange={ e => setLastName(e.target.value) }
-                    />
-                </div>
-                <div className="row"> {/* Middle name */}
-                    <label>Middle name</label>
-                    <input
-                        type="text"
-                        value={ middleName }
-                        onChange={ e => setMiddleName(e.target.value) }
-                    />
-                </div>
-                <div className="tools">
-                    <div
-                        className={ `tool cancel ${ userDataChanged && 'active' }` }
-                        onClick={ handleCancelUserData }
-                    > Cancel </div>
-                    <div
-                        className={ `tool save ${ userDataChanged && 'active' }` }
-                        onClick={ handleSaveUserData }
-                    > Save </div>
+
+                <div className="rows no-copy passport end"> {/* Паспортные данные */}
+                    <h2>Passport data{ !passport && '*' }</h2>
+                    <div className="row no-copy"> {/* Series */}
+                        <label>Series</label>
+                        <input required
+                            type="number"
+                            value={ series }
+                            onChange={ e => e.target.value.length <= 4 && setSeries(e.target.value) }
+                            maxLength={ 4 }
+                        />
+                    </div>
+                    <div className="row no-copy"> {/* Number */}
+                        <label>Number</label>
+                        <input required
+                            type="number"
+                            value={ number }
+                            onChange={ e => e.target.value.length <= 6 && setNumber(e.target.value) }
+                            maxLength={ 4 }
+                        />
+                    </div>
+                    <div className="row no-copy"> {/* Issued by */}
+                        <label>Issued by</label>
+                        <input required
+                            type="text"
+                            value={ issuedBy }
+                            onChange={ e => setIssuedBy(e.target.value) }
+                        />
+                    </div>
+                    <div className="row no-copy"> {/* Issue date */}
+                        <label>Issue date</label>
+                        <input required
+                            type="date"
+                            value={ issueDate }
+                            onChange={ e => setIssueDate(e.target.value) }
+                        />
+                    </div>
+                    <div className="row no-copy"> {/* Division code */}
+                        <label>Division code</label>
+                        <input required
+                            type="text"
+                            value={ divisionCode }
+                            onChange={ e => e.target.value.length <= 6 && setDivisionCode(e.target.value) }
+                            maxLength={ 6 }
+                            minLength={ 6 }
+                        />
+                    </div>
+                    <div className="row no-copy"> {/* Registration address */}
+                        <label>Registration address</label>
+                        <input required
+                            type="text"
+                            value={ registrationAddress }
+                            onChange={ e => setRegistrationAddress(e.target.value) }
+                        />
+                    </div>
+                    <div className="tools">
+                        <div
+                            className={ `tool cancel ${ passportDataChanged && 'active' }` }
+                            onClick={ handleCancelPassportData }
+                        > Cancel </div>
+                        {passport
+                        ? <div
+                            className={ `tool save ${ passportDataChanged && 'active' }` }
+                            onClick={ handleSavePassportData }
+                        > Save </div>
+                        : <div
+                            className={ `tool create ${ passportDataChanged && 'active' }` }
+                            onClick={ handleCreatePassportData }
+                        > Create </div>
+                        }
+                    </div>
                 </div>
             </div>
 
-            <div className="rows no-copy passport end"> {/* Паспортные данные */}
-                <h2>Passport data</h2>
-                <div className="row no-copy"> {/* Series */}
-                    <label>Series</label>
-                    <input required
-                        type="number"
-                        value={ series }
-                        onChange={ e => e.target.value.length <= 4 && setSeries(e.target.value) }
-                        maxLength={ 4 }
-                    />
-                </div>
-                <div className="row no-copy"> {/* Number */}
-                    <label>Number</label>
-                    <input required
-                        type="number"
-                        value={ number }
-                        onChange={ e => e.target.value.length <= 6 && setNumber(e.target.value) }
-                        maxLength={ 4 }
-                    />
-                </div>
-                <div className="row no-copy"> {/* Issued by */}
-                    <label>Issued by</label>
-                    <input required
-                        type="text"
-                        value={ issuedBy }
-                        onChange={ e => setIssuedBy(e.target.value) }
-                    />
-                </div>
-                <div className="row no-copy"> {/* Issue date */}
-                    <label>Issue date</label>
-                    <input required
-                        type="date"
-                        value={ issueDate }
-                        onChange={ e => setIssueDate(e.target.value) }
-                    />
-                </div>
-                <div className="row no-copy"> {/* Division code */}
-                    <label>Division code</label>
-                    <input required
-                        type="text"
-                        value={ divisionCode }
-                        onChange={ e => e.target.value.length <= 6 && setDivisionCode(e.target.value) }
-                        maxLength={ 6 }
-                        minLength={ 6 }
-                    />
-                </div>
-                <div className="row no-copy"> {/* Registration address */}
-                    <label>Registration address</label>
-                    <input required
-                        type="text"
-                        value={ registrationAddress }
-                        onChange={ e => setRegistrationAddress(e.target.value) }
-                    />
-                </div>
-                <div className="tools">
-                    <div
-                        className={ `tool cancel ${ passportDataChanged && 'active' }` }
-                        onClick={ handleCancelPassportData }
-                    > Cancel </div>
-                    {passport
-                    ? <div
-                        className={ `tool save ${ passportDataChanged && 'active' }` }
-                        onClick={ handleSavePassportData }
-                    > Save </div>
-                    : <div
-                        className={ `tool create ${ passportDataChanged && 'active' }` }
-                        onClick={ handleCreatePassportData }
-                    > Create </div>
-                    }
-                </div>
-            </div>
-            { !passport ? <h3 className="commitment-notification">Passport data is required</h3> : <div className="commitment-notification"></div> }
-
-            <div className="show-menu-btn" onClick={ handleShowMenu }>
-                <img
-                    src={ menu_icon }
-                    alt="menu button"
-                />
-            </div>
-
-            { isMenuShow &&
-                <div className="menu">
-                    <div onClick={ () => navigate('/') }>Home</div>
-                    <div onClick={ () => navigate('/credits') } >My credits</div>
-                    <div onClick={ () => navigate('/products') } >Products</div>
-                </div>
-            }
+            {/* <FloatingMenu /> */}
         </div>
     )
 }

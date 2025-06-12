@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../styles/loan.css'
 import getPath from "../config/serverClient";
-import { showMessage } from "./messages";
+import { showMessage } from "../components/messages";
 import { useParams } from "react-router-dom";
 
 export default function Loan() {

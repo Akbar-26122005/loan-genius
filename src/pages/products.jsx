@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import '../styles/products.css';
 import getPath from "../config/serverClient";
-import { showMessage } from "./messages";
+import { showMessage } from "../components/messages";
 
 export default function Products({ user }) {
     const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true)
             try {
                 const response = await fetch(getPath('/products/get-all'), {
                     method: 'GET'
@@ -23,14 +25,15 @@ export default function Products({ user }) {
             } catch (err) {
                 showMessage(err.messagem, 'error-message')
             }
+            setLoading(false)
         }
 
         fetchData()
     }, [])
 
-    return (
+    return loading ? null : (
         <div className="Products">
-
+            { products.map(product => product && <Product key={ product.id } product={ product } />) }
         </div>
     )
 }

@@ -1,23 +1,31 @@
 .Profile {
-    margin-top: 60px;
+    margin-top: 20px;
     border-radius: 12px;
     display: grid;
     gap: 20px;
+
+    & h1 {
+        color: var(--fore-color);
+    }
 }
 
-.Profile > .rows {
-    background: darkgray;
+.Profile .columns {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 100px;
+}
+
+.Profile .rows {
+    background: #bbb;
     width: 700px; min-height: 600px;
     box-shadow: 4px 4px 10px 4px rgba(0, 0, 0, 0.5);
     border-radius: 18px;
     display: grid;
     align-content: center; justify-items: center;
+    background: var(--back-color);
+    color: var(--fore-color);
     gap: 10px;
 }
-
-/* .Profile > .rows.end {
-    margin-bottom: 100px;
-} */
 
 .Profile .row {
     display: flex; flex-direction: column;
@@ -30,7 +38,8 @@
     padding: 4px 20px;
     background: transparent;
     color: #031927;
-    border: 2px solid #031927;
+    border: 2px solid var(--fore-color);
+    color: var(--fore-color);
 }
 
 .Profile .rows .tools {
@@ -64,36 +73,4 @@
 .commitment-notification {
     color: red;
     margin-bottom: 100px;
-}
-
-.Profile .show-menu-btn {
-    width: 60px; height: 60px;
-    background: #031927;
-    display: flex;
-    align-items: center; justify-content: center;
-    position: absolute;
-    top: 160px; right: 20px;
-    border-radius: 12px;
-    cursor: pointer;
-
-    & > img {
-        width: 55%; height: 55%;
-        background-color: transparent;
-    }
-}
-
-.Profile .menu {
-    background: #25394b;
-    position: absolute;
-    width: 300px; height: 200px;
-    top: 200px;right: 100px;
-    border-radius: 30px 0 30px 20px;
-    box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, 0.5);
-    display: grid;
-    align-content: space-evenly; justify-items: center;
-    cursor: pointer;
-}
-
-.Profile .menu > div {
-    color: #fff;
 }

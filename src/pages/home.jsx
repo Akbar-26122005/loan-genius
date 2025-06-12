@@ -37,7 +37,7 @@ function Home({ user, setUser }) {
         if (user === null)
             navigate('/auth')
         else
-        navigate('/profile')
+        navigate('/products')
     }
 
     return (

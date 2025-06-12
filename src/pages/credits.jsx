@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import '../styles/credits.css'
 import getPath from "../config/serverClient";
-import { showMessage } from "./messages";
+import { showMessage } from "../components/messages";
 import { useNavigate } from "react-router-dom";
 
 export default function Credits({ user }) {
     const [loans, setLoans] = useState([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true)
             try {
                 const response = await fetch(getPath(`/loans/get-all?user_id=${user.id}`), {
                     method: 'GET'
@@ -22,6 +24,7 @@ export default function Credits({ user }) {
                     throw new Error(data.message)
 
                 setLoans(data.loans)
+                setLoading(false)
             } catch (err) {
                 showMessage(err.message, 'error-message')
             }
@@ -30,15 +33,16 @@ export default function Credits({ user }) {
         fetchData()
     }, [])
 
-    return (
+    return loading ? <div>Loading...</div> : (
         <div className="Credits">
-            <h2>Loans</h2>
+            <h1>My credits</h1>
             {
-                loans.map(loan => 
+                loans.map(appl =>
+                    appl.loans &&
                     <LoanTile
-                        key={ loan.id }
-                        loan={ loan.loans }
-                        product={ loan.credit_products }
+                        key={ appl.id }
+                        loan={ appl.loans }
+                        product={ appl.credit_products }
                     />
                 )
             }
@@ -56,7 +60,7 @@ function LoanTile({ loan, product }) {
     return (
         <div className="loan-tile" onClick={ handleClick }>
             <h3>{ product.name }</h3>
-            <h4>{ `${loan.final_amount}₽` }</h4>
+            <h4>{ `${ loan.final_amount }₽` }</h4>
         </div>
     )
 }
