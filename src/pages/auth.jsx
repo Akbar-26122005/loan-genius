@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/auth.css';
 import back_icon from '../resources/back_icon.svg';
+import { UserContext } from '../config/userContext';
+import getPath from '../config/serverClient';
 import visibility_icon from '../resources/visibility_icon.svg';
 import visibility_off_icon from '../resources/visibility_off_icon.svg';
-import getPath from '../config/serverClient';
+import '../styles/auth.css';
 
-export default function Auth({ user, setUser }) {
+export default function Auth() {
+    const { user, setUser } = useContext(UserContext)
     const [isLogInMode, setIsLogInMode] = useState(true);
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user !== null)
-            window.location.replace('/profile')
-        console.log(user)
+        if (user) {
+            window.location.replace('/mybank')
+            return
+        }
     }, [])
 
     function showMessage(msg) {
@@ -156,6 +159,7 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
 
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate()
 
     const userLogIn = async e => {
         e.preventDefault();
@@ -178,7 +182,7 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
                 throw new Error(data.message)
 
             setUser(data.user)
-            window.location.replace('/profile')
+            navigate(data.user.is_staff ? '/employee' : '/mybank')
         } catch (err) {
             showMessage(err.message)
         }
@@ -237,6 +241,7 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [birthDate, setBirthDate] = useState(null);
+    const navigate = useNavigate();
     
     const userSignUp = async e => {
         e.preventDefault();
@@ -271,7 +276,7 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                 throw new Error('Failed to register')
 
             setUser(data.user)
-            window.location.replace('/profile')
+            navigate('/mybank')
         } catch (err) {
             showMessage(err.message)
         }

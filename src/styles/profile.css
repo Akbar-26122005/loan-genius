@@ -74,3 +74,23 @@
     color: red;
     margin-bottom: 100px;
 }
+
+.BackButton {
+    background: #25394b;
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    border: 1px solid black;
+    border-radius: 12px;
+    cursor: pointer;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+
+    & > img {
+        width: 50%;
+        margin: 0 3px 3px 0;
+    }
+}

@@ -1,0 +1,285 @@
+.Employee {
+    width: 100%;
+    height: 99%;
+    display: block;
+    justify-items: center;
+}
+
+.Employee header {
+    justify-items: start;
+}
+
+.Employee header .row.user {
+    color: var(--fore-color);
+
+    & > .logout {
+        color: gray;
+        cursor: pointer;
+
+        &:hover {
+            color: darkgray;
+        }
+    }
+}
+
+.Employee header .row {
+    width: 60vw;
+    max-width: 1150px;
+    height: 80px;
+    display: flex;
+    align-items: center; justify-content: space-between;
+
+    &.user > h2 {
+        border-bottom: 2px solid gray;
+        padding-right: 40px;
+    }
+    
+    &.tabs {
+        border-bottom: 1px solid gray;
+    }
+}
+
+.Employee header > div > div {
+    color: var(--fore-color);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    transition: all 0.3s ease;
+
+    & > img {
+        width: 30px;
+    }
+
+    &.first {
+        gap: 20px;
+    }
+    
+    &.last {
+        cursor: pointer;
+    
+        &:hover {
+            opacity: 0.6;
+        }
+    }
+}
+
+.nav-item {
+    cursor: pointer;
+    position: relative;
+    padding-bottom: 5px;
+    display: grid;
+    align-content: end;
+    justify-items: center;
+    transition: all 0.3s ease;
+
+    &:hover {
+        opacity: 0.6;
+
+        &:after {
+            opacity: 0.6;
+        }
+    }
+
+    &::after {
+        content: '';
+        position: relative;
+        left: 0; bottom: 0;
+        width: 0; height: 2px;
+        background: #fff;
+        transition: width 0.3s ease-in;
+    }
+
+    &.active::after {
+        width: 100%;
+        transition: width 0.3s ease;
+    }
+}
+
+.Employee .context {
+    max-width: 60vw;
+    width: 1150px;
+    height: 80vh;
+}
+
+.Employee .Applications {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.Employee .Applications .Application {
+    background: #444;
+    color: var(--fore-color);
+    display: grid;
+    justify-items: center;
+    border-radius: 18px;
+    cursor: pointer;
+    padding: 20px;
+    gap: 10px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-6px);
+    }
+}
+
+.Employee .Applications .Application .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Employee .DataForm {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+
+.Employee .DataForm > .form {
+    background: #999;
+    width: 600px;
+    height: 700px;
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    align-content: start;
+    justify-items: center;
+    overflow: hidden;
+}
+
+.Employee .DataForm > .form > .switch {
+    position: relative;
+    background: #333;
+    margin-top: 30px;
+    font-size: 17px;
+    display: flex;
+    gap: 30px;
+    padding: 6px 20px;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    & > div {
+        z-index: 1;
+        color: #fff;
+    }
+    
+    & > .slider {
+        position: absolute;
+        top: 6px;
+        background: var(--active-dark-color); /* #555 */
+        content-visibility: visible;
+        padding: 1px 10px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        height: 24px;
+        
+        & > div {
+            opacity: 0;
+        }
+        
+        &.application {
+            left: 10px;
+            width: 96px;
+        }
+        
+        &.user {
+            transform: translateX(116px);
+            width: 40px;
+        }
+    }
+}
+
+.Employee .DataForm > .form > .data {
+    position: relative;
+    display: flex;
+    width: 200%;
+    height: 90%;
+    transition: all 0.3s ease;
+
+    & > * {
+        display: grid;
+        align-items: center;
+        justify-content: center;
+
+        & > .form {
+            background: #333;
+            color: var(--fore-color);
+            width: 500px;
+            height: 500px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+
+            & > h2 {
+                margin-top: 30px;
+            }
+
+            & > .row {
+                width: 80%;
+                height: max-content;
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+
+    & > .application {
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    & > .user {
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    &.application {
+        left: 0;
+        transform: translateX(25%);
+    }
+
+    &.user {
+        transform: translateX(-25%);
+    }
+}
+
+.Employee .DataForm .form > .tools {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+
+    & > button {
+        width: 100px;
+        height: 34px;
+        font-size: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease-in;
+
+        &.approve:hover {
+            background: darkgreen;
+            color: #eee;
+        }
+
+        &.reject:hover {
+            background: darkred;
+            color: #eee;
+        }
+
+        &.cancel:hover {
+            background: #666;
+            color: #eee;
+        }
+    }
+}

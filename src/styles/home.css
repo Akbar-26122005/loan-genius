@@ -1,3 +1,44 @@
+.Home header {
+    background-color: #25394b;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--fore-color);
+}
+
+.Home header nav {
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.Home header nav > div {
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in;
+
+    &:hover {
+        background: #364a5c;
+    }
+}
+
+.Home header .container {
+    display: block;
+}
+
+#main-headline {
+    color: #fff;
+    font-size: 40px;
+}
+
 .hero {
     background: linear-gradient(135deg, #031927, #031927);
     color: white;
@@ -7,12 +48,14 @@
     width: 100vw;
 }
 
-.Home .container {
-    display: block;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .cta-button {
-    background-color: #0ca9a9;
+    background-color: var(--active-dark-color);
     color: white;
     border: none;
     padding: 12px 30px;
@@ -23,7 +66,7 @@
 }
 
 .cta-button:hover {
-    background-color: #34d1d1;
+    background-color: var(--active-color);
     transform: translateY(-2px);
 }
 

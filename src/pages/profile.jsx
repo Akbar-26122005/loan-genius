@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useState, useContext } from "react"
+import { UNSAFE_useFogOFWarDiscovery, useNavigate } from "react-router-dom"
 import { showMessage } from "../components/messages"
-import FloatingMenu from '../components/floatingMenu'
 import getPath from "../config/serverClient"
+import { UserContext } from "../config/userContext"
+import back_icon from '../images/back_icon.svg'
 import '../styles/profile.css'
 
-export default function Profile({ user }) {
+export default function Profile() {
+    const { user, setUser, setLoading } = useContext(UserContext)
     const [reload, setReload] = useState(false)
     const [isMenuShow, setIsMenuShow] = useState(false)
+    const navigate = useNavigate()
 
-    const [email, setEmail] = useState(user.email)
-    const [phoneNumber, setPhoneNumber] = useState(user.phone_number)
-    const [firstName, setFirstName] = useState(user.first_name)
-    const [lastName, setLastName] = useState(user.last_name)
-    const [middleName, setMiddleName] = useState(user.middle_name)
+    const [email, setEmail] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [middleName, setMiddleName] = useState('')
     const [userDataChanged, setUserDataChanged] = useState(false)
     
     const [passport, setPassport] = useState(null)
@@ -26,10 +29,13 @@ export default function Profile({ user }) {
     const [passportDataChanged, setPassportDataChanged] = useState(false)
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (!user) return
+        const fetchPassportData = async () => {
             try {
-                const response = await fetch(getPath(`/passport/get?user_id=${user.id}`))
+                const response = await fetch(getPath(`/passport/get?user_id=${user.id}`), {
+                    method: 'GET'
+                    ,headers: { 'Content-Type': 'application/json' }
+                    ,credentials: 'include'
+                })
 
                 const data = await response.json()
 
@@ -42,19 +48,9 @@ export default function Profile({ user }) {
             }
         }
 
-        fetchData()
+        fetchPassportData()
         handleCancelUserData()
     }, [reload])
-
-    useEffect(() => {
-        if (!passport) return
-        setSeries(passport.series)
-        setNumber(passport.number)
-        setIssuedBy(passport.issued_by)
-        setIssueDate(passport.issue_date)
-        setDivisionCode(passport.division_code)
-        setRegistrationAddress(passport.registration_address)
-    }, [passport])
 
     useEffect(() => {
         setUserDataChanged(
@@ -90,6 +86,16 @@ export default function Profile({ user }) {
             )
         }
     }, [series, number, issuedBy, issueDate, divisionCode, registrationAddress])
+
+    useEffect(() => {
+        if (!passport) return
+        setSeries(passport.series)
+        setNumber(passport.number)
+        setIssuedBy(passport.issued_by)
+        setIssueDate(passport.issue_date)
+        setDivisionCode(passport.division_code)
+        setRegistrationAddress(passport.registration_address)
+    }, [passport])
 
     const handleCancelUserData = () => {
         setEmail(user.email)
@@ -139,8 +145,8 @@ export default function Profile({ user }) {
             if (!response.ok || !data.success)
                 throw new Error(data.message)
 
-            // setUser(data.user)
-            // setReload(prev => !prev)
+            setUser(data.user)
+            setReload(prev => !prev)
             window.location.reload()
         } catch (err) {
             showMessage(err.message, 'error-message')
@@ -171,8 +177,8 @@ export default function Profile({ user }) {
             if (!response.ok || !data.success)
                 throw new Error(data.message)
 
-            // setPassport(data.passport)
-            // setReload(prev => !prev)
+            setPassport(data.passport)
+            setReload(prev => !prev)
             window.location.reload()
         } catch (err) {
             showMessage(err.message, 'error-message')
@@ -203,22 +209,19 @@ export default function Profile({ user }) {
             if (!response.ok || !data.success)
                 throw new Error(data.message)
 
-            // setPassport(data.passport)
-            // setReload(prev => !prev)
+            setPassport(data.passport)
+            setReload(prev => !prev)
             window.location.reload()
         } catch (err) {
             showMessage(err.message, 'error-message')
         }
     }
 
-    if (!user)
-        window.location.replace('/')
-
     return (
         <div className="Profile">
             <h1>User profile</h1>
             <div className="columns">
-                <div className="rows no-copy user"> {/* Данные пользователя */}
+                <div className="rows no-copy user"> {/* User data */}
                     <h2>User data</h2>
                     <div className="row"> {/* Email */}
                         <label>Email</label>
@@ -272,7 +275,7 @@ export default function Profile({ user }) {
                     </div>
                 </div>
 
-                <div className="rows no-copy passport end"> {/* Паспортные данные */}
+                <div className="rows no-copy passport end"> {/* Passport data */}
                     <h2>Passport data{ !passport && '*' }</h2>
                     <div className="row no-copy"> {/* Series */}
                         <label>Series</label>
@@ -344,8 +347,21 @@ export default function Profile({ user }) {
                     </div>
                 </div>
             </div>
+            <BackButton onClick={ () => window.history.back() } />
+        </div>
+    )
+}
 
-            {/* <FloatingMenu /> */}
+function BackButton({ onClick }) {
+    return (
+        <div
+            className="BackButton"
+            onClick={ onClick }
+        >
+            <img
+                src={ back_icon }
+                alt="back"
+            />
         </div>
     )
 }

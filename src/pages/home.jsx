@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/home.css';
 import getPath from '../config/serverClient';
+import person_icon from '../images/person_icon.svg'
+import { showMessage } from '../components/messages';
+import { UserContext } from '../config/userContext';
+import '../styles/home.css';
 
-function Home({ user, setUser }) {
+function Home() {
+    const { user } = useContext(UserContext)
     const navigate = useNavigate();
 
     const handleNavigate = isLogInMode => {
@@ -30,7 +34,9 @@ function Home({ user, setUser }) {
                 throw new Error(data.message)
 
             window.location.reload()
-        } catch (err) { }
+        } catch (err) {
+            showMessage(err.message, 'error-message')
+        }
     }
 
     const handleCtaClick = () => {
@@ -40,9 +46,26 @@ function Home({ user, setUser }) {
         navigate('/products')
     }
 
+    const handleNavigateToPersonalAccount = () => {
+        window.location.assign('mybank')
+    }
+
     return (
         <div className='Home'>
-
+            <header>
+                <div className="container">
+                    <h1 id='main-headline'>Loan genius</h1>
+                </div>
+                <nav>
+                    <div onClick={ handleNavigateToPersonalAccount }>
+                        <div>Personal account</div>
+                        <img
+                            src={ person_icon }
+                            alt=""
+                        />
+                    </div>
+                </nav>
+            </header>
             <section className="hero">
                 <div className="container">
                     <h2>A loan for any purpose up to 1 000 000₽</h2>
