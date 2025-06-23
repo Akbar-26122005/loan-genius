@@ -4,7 +4,7 @@ const server = {
 }
 
 // const getPath = (path = '') =>`${server.protocol}://${server.domain}${path}`
-const getPath = (path = '') =>`https://loan-genius-server.vercel.app/${path}`
+const getPath = (path = '') =>`https://loan-genius-server.vercel.app${path}`
 
 export const getDateFromTimestamp = (timestamp) => new Date(timestamp).toISOString().split('T')[0]
 
