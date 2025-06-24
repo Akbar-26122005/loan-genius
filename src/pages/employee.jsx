@@ -4,11 +4,15 @@ import '../styles/employee.css'
 import getPath, { getDateFromTimestamp } from "../config/serverClient";
 import { showMessage } from "../components/messages";
 import Loading from "../components/loading";
+import { useNavigate } from "react-router-dom";
 
 export default function Employee() {
     const { user } = useContext(UserContext)
     const tabs = ['Applications', 'Profile']
     const [activeTab, setActiveTab] = useState(tabs[0])
+    const navigate = useNavigate()
+
+    const [Applications, setApplications] = useState(<Applications />)
 
     const handleLogOut = async () => {
         try {
@@ -18,7 +22,7 @@ export default function Employee() {
                 ,credentials: 'include'
             })
 
-            window.location.replace('/')
+            navigate('/', { replace: true })
         } catch (err) {}
     }
 
@@ -47,7 +51,7 @@ export default function Employee() {
                 </div>
             </header>
             <div className="context">{
-                activeTab === 'Applications' && <Applications />
+                activeTab === 'Applications' && Applications
             }</div>
         </div>
     )
