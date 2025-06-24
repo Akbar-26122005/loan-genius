@@ -3,6 +3,7 @@ import getPath from "../config/serverClient"
 import { showMessage } from "../components/messages"
 import account_box_icon from '../images/account_box_icon.svg'
 import { UserContext } from "../config/userContext"
+import Loading from "../components/loading"
 import '../styles/mybank.css'
 import { useNavigate } from "react-router-dom"
 
@@ -55,6 +56,7 @@ function Home() {
     const { user } = useContext(UserContext)
     const [loans, setLoans] = useState([])
     const [loading, setLoading] = useState(false)
+    const [selectLoan, setSelectLoan] = useState(null)
     const navigate = useNavigate()
     
     useEffect(() => {
@@ -82,17 +84,51 @@ function Home() {
         fetchData()
     }, [])
 
-    if (loading) return <div>Loading...</div>
+    if (loading) return <Loading />
 
     return (
         <div className="Home">
             <div className="Loans">
                 <h2>My loans</h2>
                 { loans.map(appl =>
-                    <Loan loan={ appl.loans } product={ appl.credit_products } />
+                    <Loan
+                        key={appl.id}
+                        loan={ appl.loans }
+                        product={ appl.credit_products }
+                        onClick={ () => setSelectLoan(appl.loans) }
+                        isActive={ selectLoan === appl.loans }
+                    />
                 ) }
                 <div className="Loan add-btn" onClick={ () => navigate('/products') }>
                     New product </div>
+            </div>
+            <div className="data">
+                { selectLoan && console.log(selectLoan) }
+                { !selectLoan ? null :
+                    <div className="about">
+                        <h2>About the loan</h2>
+                        <div className="row">
+                            <label>Account number</label>
+                            <div>{ selectLoan.account_number }</div>
+                        </div>
+                        <div className="row">
+                            <label>Initial amount</label>
+                            <div>{ selectLoan.final_amount }</div>
+                        </div>
+                        <div className="row">
+                            <label>Rate</label>
+                            <div>{ selectLoan.final_rate }</div>
+                        </div>
+                        <div className="row">
+                            <label>Term</label>
+                            <div>{ `${ selectLoan.final_term } months` }</div>
+                        </div>
+                        <div className="row">
+                            <label>Disbursement date</label>
+                            <div>{ selectLoan.disbursement_date }</div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     )
@@ -110,10 +146,14 @@ function Payments() {
     )
 }
 
-function Loan({ loan, product }) {
+function Loan({ loan, product, onClick, isActive }) {
+    const handleClick = () => {
+        onClick()
+    }
+
     if (!loan || !product) return null
     return (
-        <div className="Loan">
+        <div className={`Loan ${ isActive && 'active' }`} onClick={ handleClick }>
             <div className="row">{ product.name }</div>
         </div>
     )

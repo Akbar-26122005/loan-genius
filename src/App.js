@@ -7,6 +7,7 @@ import Products from './pages/products'
 import Error404 from './pages/page404';
 import MyBank from './pages/mybank';
 import Employee from './pages/employee';
+import Loading from './components/loading';
 import { MessageSystem} from './components/messages';
 import { UserProvider } from './config/userContext';
 import { ProtectedUserRoute, ProtectedEmployeeRoute } from './config/ProtectedRoute';
@@ -31,6 +32,7 @@ export default function App() {
             <Route element={ <ProtectedEmployeeRoute /> }>
               <Route path='/employee' element={ <Employee /> } />
             </Route>
+            <Route path='/loading' element={ <Loading /> } />
             <Route path='*' element={ <Error404 /> } />
             </Routes>
         </Router>

@@ -3,6 +3,7 @@ import { UserContext } from "../config/userContext";
 import '../styles/employee.css'
 import getPath, { getDateFromTimestamp } from "../config/serverClient";
 import { showMessage } from "../components/messages";
+import Loading from "../components/loading";
 
 export default function Employee() {
     const { user } = useContext(UserContext)
@@ -56,6 +57,7 @@ function Applications() {
     const [applications, setApplications] = useState([])
     const [loading, setLoading] = useState(false)
     const [dataForm, setDataForm] = useState(null)
+    const [reload, setReload] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,13 +81,13 @@ function Applications() {
             }
         }
         fetchData()
-    }, [])
+    }, [reload])
 
     const handleClick = (appl) => {
-        setDataForm(<DataForm appl={appl} onClose={ () => setDataForm(null) } />)
+        setDataForm(<DataForm appl={appl} onClose={ () => setDataForm(null) } reload={ () => setReload(prev => !prev) } />)
     }
 
-    if (loading) return <div>Loading...</div>
+    if (loading) return <Loading />
 
     if (applications.length === 0) return null
 
@@ -122,7 +124,7 @@ function Application({ appl, onClick }) {
     )
 }
 
-function DataForm({ appl, onClose }) {
+function DataForm({ appl, onClose, reload }) {
     const [loading, setLoading] = useState(false)
     const modes = ['application', 'user']
     const [mode, setMode] = useState(modes[0])
@@ -183,6 +185,7 @@ function DataForm({ appl, onClose }) {
 
             if (status !== 'approved') return
             const user_id = String(user.id)
+            const accountNumber = `UI${user_id.length > 2 ? user_id[0] + user_id[1] : user_id}ND${getDateFromTimestamp(new Date())}DT${getDateFromTimestamp(appl.created_at)}PL`
             const response = await fetch(getPath('/loans/create'), {
                 method: 'POST'
                 ,headers: { 'Content-Type': 'application/json' }
@@ -193,21 +196,42 @@ function DataForm({ appl, onClose }) {
                     ,final_term: appl.term
                     ,final_rate: appl.rate
                     ,disbursement_date: new Date(year, month, day)
-                    ,account_number: `UI${user_id.length > 2 ? user_id[0] + user_id[1] : user_id}ND${getDateFromTimestamp(new Date())}DT${getDateFromTimestamp(appl.created_at)}PL`
+                    ,account_number: accountNumber
                 })
             })
             const data = await response.json()
 
             if (!response.ok || !data.success)
                 throw new Error(data.message)
+
+            const final_amount = appl.amount + appl.rate / 12 * appl.term * appl.amount
+
+            const contractResponse = await fetch(getPath('/contracts/create'), {
+                method: 'POST'
+                ,headers: { 'Content-Type': 'application/json' }
+                ,credentials: 'include'
+                ,body: JSON.stringify({
+                    loan_id: data.data.id
+                    ,contract_number: accountNumber
+                    ,start_date: new Date()
+                    ,end_date: new Date(year, today.getMonth() + appl.term, day)
+                    ,monthly_payment: final_amount / appl.term
+                })
+            })
+            const contractData = await contractResponse.json()
+
+            if (!contractResponse.ok || !contractData.success)
+                throw new Error(contractData.message)
         } catch (err) {
             showMessage(err.message, 'error-message')
+            console.error(err)
         } finally {
-            window.location.reload()
+            // window.location.reload()
+            reload()
         }
     }
 
-    if (loading) return <div>Loading...</div>
+    if (loading) return <Loading />
 
     if (!user || !product) return null
     
