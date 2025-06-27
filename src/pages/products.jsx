@@ -36,6 +36,7 @@ export default function Products() {
 
     return loading ? null : (
         <div className="Products">
+            <div className="title">Products</div>
             { products.map(product =>
                 product.is_active &&
                 <Product
@@ -126,7 +127,8 @@ function Form({ product, isClosed }) {
             if (!response.ok || !data.success)
                 throw new Error(data.message)
 
-            console.log(data)
+            window.location.replace('/mybank')
+            showMessage('The application has been sent')
         } catch (err) {
             showMessage(err.message, 'error-message')
             console.log(err.message)
@@ -182,30 +184,3 @@ function Form({ product, isClosed }) {
         </div>
     )
 }
-
-/* applications
-1.  id
-2.  user_id
-3.  product_id
-4.  created_at
-5.  updated_at
-6.  decision_date
-7.  purpose
-8.  rate
-9.  term
-10. status
-11. amount
-*/
-
-/* products
-1.  base_rate
-2.  description
-3.  early_repayment
-4.  id
-5.  is_active
-6.  max_amount
-7.  max_term
-8.  min_amount
-9.  min_term
-10. name
-*/

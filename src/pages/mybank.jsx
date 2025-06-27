@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState, useContext, memo } from "react"
 import getPath from "../config/serverClient"
 import { showMessage } from "../components/messages"
 import account_box_icon from '../images/account_box_icon.svg'
@@ -6,12 +6,23 @@ import { UserContext } from "../config/userContext"
 import Loading from "../components/loading"
 import '../styles/mybank.css'
 import { useNavigate } from "react-router-dom"
+import back_icon from '../images/back_icon.svg'
 
 export default function MyBank() {
     const { user, setUser } = useContext(UserContext)
     const tabs = ['Home', 'Operations', 'Payments']
     const [activeTab, setActiveTab] = useState(tabs[0])
     const navigate = useNavigate()
+
+    const [home, setHome] = useState(null)
+    const [operations, setOperations] = useState(null)
+    const [payments, setPayments] = useState(null)
+
+    useEffect(() => {
+        setHome(<Home />)
+        setOperations(<Operations />)
+        setPayments(<Payments />)
+    }, [])
 
     const navigateToProfile = () => {
         navigate('/profile')
@@ -43,46 +54,32 @@ export default function MyBank() {
             </header>
             <div className="context">
                 {
-                    activeTab === 'Home' ? <Home /> :
-                    activeTab === 'Operations' ? <Operations /> :
-                    activeTab === 'Payments' ? <Payments /> : null
+                    activeTab === 'Home' ? home :
+                    activeTab === 'Operations' ? operations :
+                    activeTab === 'Payments' ? payments : null
                 }
             </div>
         </div>
     )
 }
 
-function Home() {
+const Home = memo(() => {
     const { user } = useContext(UserContext)
-    const [loans, setLoans] = useState([])
+    const [applications, setApplications] = useState([])
     const [loading, setLoading] = useState(false)
     const [selectLoan, setSelectLoan] = useState(null)
     const navigate = useNavigate()
-    
+
     useEffect(() => {
-        const fetchData = async () => {
+        try {
             setLoading(true)
-            try {
-                const response = await fetch(getPath(`/loans/get-all?user_id=${user.id}`), {
-                    method: 'GET'
-                    ,headers: { 'Content-Type': 'application/json' }
-                    ,credentials: 'include'
-                })
-
-                const data = await response.json()
-
-                if (!response.ok || !data.success)
-                    throw new Error(data.message)
-
-                setLoans(data.loans)
-            } catch (err) {
-                showMessage(err.message, 'err-message')
-            } finally {
-                setLoading(false)
-            }
+            setApplications([...user.applications])
+        } catch (err) {
+            console.error(err.message)
+        } finally {
+            setLoading(false)
         }
-        fetchData()
-    }, [])
+    }, [user])
 
     if (loading) return <Loading />
 
@@ -90,7 +87,7 @@ function Home() {
         <div className="Home">
             <div className="Loans">
                 <h2>My loans</h2>
-                { loans.map(appl =>
+                { applications.map(appl =>
                     <Loan
                         key={appl.id}
                         loan={ appl.loans }
@@ -103,7 +100,6 @@ function Home() {
                     New product </div>
             </div>
             <div className="data">
-                { selectLoan && console.log(selectLoan) }
                 { !selectLoan ? null :
                     <div className="about">
                         <h2>About the loan</h2>
@@ -117,7 +113,7 @@ function Home() {
                         </div>
                         <div className="row">
                             <label>Rate</label>
-                            <div>{ selectLoan.final_rate }</div>
+                            <div>{ selectLoan.final_rate } %</div>
                         </div>
                         <div className="row">
                             <label>Term</label>
@@ -132,17 +128,11 @@ function Home() {
             </div>
         </div>
     )
-}
+})
 
 function Operations() {
     return (
         <div className="Operations"></div>
-    )
-}
-
-function Payments() {
-    return (
-        <div className="Payments"></div>
     )
 }
 
@@ -155,6 +145,138 @@ function Loan({ loan, product, onClick, isActive }) {
     return (
         <div className={`Loan ${ isActive && 'active' }`} onClick={ handleClick }>
             <div className="row">{ product.name }</div>
+        </div>
+    )
+}
+
+
+function Payments() {
+    const { user } = useContext(UserContext)
+    const [payments, setPayments] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [selectedPayment, selectedPaymentChange] = useState(null)
+
+    useEffect(() => {
+        setLoading(true)
+        try {
+            const data = user.applications.flatMap(application =>
+                application.loans.contracts.flatMap(contract =>
+                    contract.payments || []
+                ) || []
+            )
+            const contracts = {}
+            for (const payment of data) {
+                const contract = `id${payment.contract_id}`
+                if (!contracts[contract])
+                    contracts[contract] = []
+
+                contracts[contract].push(payment)
+            }
+            const payments = []
+            for (const contract in contracts) {
+                payments.push(
+                    contracts[contract].reduce((ac, cr) =>
+                        cr.status === 'scheduled'
+                        && new Date(cr.scheduled_date).getTime() < new Date(ac.scheduled_date).getTime()
+                        ? cr : ac
+                    )
+                )
+            }
+            setPayments(payments)
+        } catch (err) {
+            console.error(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }, [user])
+
+    const handleCloseForm = e => {
+        if (e.target.className.includes('payment-form'))
+            selectedPaymentChange(null)
+    }
+
+    if (loading) return <Loading />
+
+    if (!payments) return null
+
+    return (
+        <div className="Payments">
+            <h2>Payments</h2>
+            <div className="payments">
+                {
+                    payments.map((pmt) => 
+                        <Payment
+                            key={ pmt.id }
+                            payment={ pmt }
+                            onClick={ () => selectedPaymentChange(pmt) }
+                        />
+                    )
+                }
+            </div>
+            { selectedPayment &&
+                <div className="payment-form" onClick={ handleCloseForm }></div>
+            }
+        </div>
+    )
+}
+
+function Payment({ payment, onClick }) {
+    const { user } = useContext(UserContext)
+    const [contract, setContract] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [selected, setSelected] = useState(false)
+
+    useEffect(() => {
+        const contracts = user.applications.flatMap((appl) =>
+            appl.loans.contracts.map((contract) => contract)
+        )
+        setContract(
+            contracts.reduce((ac, cr) =>
+                cr.payments.includes(payment) ? cr : ac
+            )
+        )
+    }, [user])
+
+    const handleClick = () => {
+        setSelected(prev => !prev)
+    }
+
+    if (loading) return <Loading />
+    if (!contract) return null
+
+    return (
+        <div className="Payment">
+            <div className="column first">
+                <div className="row">
+                    <label>Account:</label>
+                    <div>{ contract.contract_number }</div>
+                </div>
+                <div className="row">
+                    <label>Pay before:</label>
+                    <div>{ payment.scheduled_date }</div>
+                </div>
+                <div className="row">
+                    <label>Amount:</label>
+                    <div>{ payment.amount } ₽</div>
+                </div>
+            </div>
+            <div className={ `column middle ${selected && 'active'}` }>
+                <div>
+                    <button
+                        className={ `tool ${ selected && 'active' }` }
+                        onClick={ onClick }
+                        >To pay</button>
+                </div>
+            </div>
+            <div
+                className={`column last ${ selected && 'active' }`}
+                onClick={ handleClick }
+                >
+                <img
+                    src={ back_icon }
+                    alt=""
+                />
+            </div>
         </div>
     )
 }

@@ -5,6 +5,10 @@
     --active-dark-color: #0ca9a9;
 }
 
+* {
+  transition: all 0.3s ease;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #1F2937;

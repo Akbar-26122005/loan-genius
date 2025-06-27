@@ -1,12 +1,13 @@
 import { useContext } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { UserContext } from "./userContext"
+import Loading from "../components/loading"
 
 export function ProtectedUserRoute({ children }) {
     const { user, loading } = useContext(UserContext)
     const location = useLocation()
 
-    if (loading) return <div>Loading...</div>
+    if (loading) return <Loading />
     if (!user) {
         return <Navigate to={'/auth'} state={{ from: location }} replace />
     }
@@ -19,7 +20,7 @@ export function ProtectedEmployeeRoute({ children }) {
     const { user, loading } = useContext(UserContext)
     const location = useLocation()
 
-    if (loading) return <div>Loading...</div>
+    if (loading) return <Loading />
     if (!user)
         return <Navigate to={'/auth'} state={{ from: location }} replace />
     if (!user.is_staff)

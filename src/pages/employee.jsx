@@ -12,18 +12,24 @@ export default function Employee() {
     const [activeTab, setActiveTab] = useState(tabs[0])
     const navigate = useNavigate()
 
-    const [Applications, setApplications] = useState(<Applications />)
+    const [applicationsComponent, setApplicationsComponent] = useState(null)
+
+    useEffect(() => {
+        setApplicationsComponent(<Applications />)
+    }, [])
 
     const handleLogOut = async () => {
         try {
-            const response = await fetch(getPath('/auth/log-out'), {
+            await fetch(getPath('/auth/log-out'), {
                 method: 'GET'
                 ,headers: { 'Content-Type': 'application/json' }
                 ,credentials: 'include'
             })
 
             navigate('/', { replace: true })
-        } catch (err) {}
+        } catch (err) {
+            showMessage(err.message, 'error-message')
+        }
     }
 
     return (
@@ -51,7 +57,7 @@ export default function Employee() {
                 </div>
             </header>
             <div className="context">{
-                activeTab === 'Applications' && Applications
+                activeTab === 'Applications' && applicationsComponent
             }</div>
         </div>
     )
@@ -59,36 +65,31 @@ export default function Employee() {
 
 function Applications() {
     const [applications, setApplications] = useState([])
+    const { res } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
     const [dataForm, setDataForm] = useState(null)
-    const [reload, setReload] = useState(false)
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true)
-                const response = await fetch(getPath(`/applications/get-all`), {
-                    method: 'GET'
-                    ,headers: { 'Content-Type': 'application/json' }
-                    ,credentials: 'include'
-                })
-                const data = await response.json()
-
-                if (!response.ok || !data.success)
-                    throw new Error(data.message)
-
-                setApplications(data.data)
-            } catch (err) {
-                showMessage(err.message, 'error-message')
-            } finally {
-                setLoading(false)
-            }
+    const fetchApplications = async () => {
+        setLoading(true);
+        try {
+            const applicationsData = res.flatMap(user =>
+                user.applications || []
+            );
+            
+            setApplications(applicationsData);
+        } catch (err) {
+            console.error(err.message)
+        } finally {
+            setLoading(false);
         }
-        fetchData()
-    }, [reload])
+    };
+
+    fetchApplications();
+}, [res]);
 
     const handleClick = (appl) => {
-        setDataForm(<DataForm appl={appl} onClose={ () => setDataForm(null) } reload={ () => setReload(prev => !prev) } />)
+        setDataForm(<DataForm key={ appl.id } appl={appl} onClose={ () => setDataForm(null) } />)
     }
 
     if (loading) return <Loading />
@@ -101,6 +102,14 @@ function Applications() {
                 <Application key={ appl.id } appl={ appl } onClick={ () => handleClick(appl) } />
             )}
             { dataForm && dataForm }
+        </div>
+    )
+}
+
+function Profile() {
+    return (
+        <div className="Profile">
+            
         </div>
     )
 }
@@ -128,66 +137,36 @@ function Application({ appl, onClick }) {
     )
 }
 
-function DataForm({ appl, onClose, reload }) {
+function DataForm({ appl, onClose }) {
+    const { user, update, res } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
     const modes = ['application', 'user']
     const [mode, setMode] = useState(modes[0])
-    const [user, setUser] = useState(null)
     const [product, setProduct] = useState(null)
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                setLoading(true)
-                const response = await fetch(getPath(`/applications/get-user?id=${appl.id}`), {
-                    method: 'GET'
-                    ,headers: { 'Content-Type': 'application/json' }
-                    ,credentials: 'include'
-                })
-                const data = await response.json()
-
-                if (!response.ok || !data.success)
-                    throw new Error(data.message)
-
-                setUser(data.data.users)
-                setProduct(data.data.credit_products)
-            } catch (err) {
-                showMessage(err.message, 'error-message')
-            } finally {
-                setLoading(false)
+        for (const user of res) {
+            for (const apl of user.applications) {
+                if (product) break
+                if (apl.id === appl.id) {
+                    setProduct(apl.credit_products)
+                    break
+                }
             }
         }
-
-        fetchUserData()
-    }, [appl])
+    }, [res])
 
     const close = e => {
         if (e.target.className.includes('DataForm'))
             onClose()
     }
 
-    const handleSetMode = (m) => {
-        setMode(m)
+    const handleSetMode = (md) => {
+        setMode(md)
     }
 
     const handleSelect = async (status) => {
         try {
-            await fetch(getPath('/applications/set-status'), {
-                method: 'POST'
-                ,headers: { 'Content-Type': 'application/json' }
-                ,credentials: 'include'
-                ,body: JSON.stringify({
-                    id: appl.id
-                    ,status: status
-                })
-            })
-
-            const today = new Date()
-            const year = today.getFullYear()
-            const month = today.getMonth() + (today.getDate() > 28 ? 2 : 1)
-            const day = today.getDate() > 28 ? 1 : today.getDate()
-
-            if (status !== 'approved') return
             const user_id = String(user.id)
             const accountNumber = `UI${user_id.length > 2 ? user_id[0] + user_id[1] : user_id}ND${getDateFromTimestamp(new Date())}DT${getDateFromTimestamp(appl.created_at)}PL`
             const response = await fetch(getPath('/loans/create'), {
@@ -195,43 +174,30 @@ function DataForm({ appl, onClose, reload }) {
                 ,headers: { 'Content-Type': 'application/json' }
                 ,credentials: 'include'
                 ,body: JSON.stringify({
-                    application_id: appl.id
-                    ,final_amount: appl.amount
-                    ,final_term: appl.term
-                    ,final_rate: appl.rate
-                    ,disbursement_date: new Date(year, month, day)
-                    ,account_number: accountNumber
+                    loan: {
+                        final_amount: appl.amount
+                        ,final_term: appl.term
+                        ,final_rate: appl.rate
+                        ,account_number: accountNumber
+                    }
+                    ,contract: {
+                        contract_number: accountNumber
+                    }
+                    ,application: {
+                        id: appl.id
+                        ,status: status
+                    }
                 })
             })
             const data = await response.json()
 
             if (!response.ok || !data.success)
                 throw new Error(data.message)
-
-            const final_amount = appl.amount + appl.rate / 12 * appl.term * appl.amount
-
-            const contractResponse = await fetch(getPath('/contracts/create'), {
-                method: 'POST'
-                ,headers: { 'Content-Type': 'application/json' }
-                ,credentials: 'include'
-                ,body: JSON.stringify({
-                    loan_id: data.data.id
-                    ,contract_number: accountNumber
-                    ,start_date: new Date()
-                    ,end_date: new Date(year, today.getMonth() + appl.term, day)
-                    ,monthly_payment: final_amount / appl.term
-                })
-            })
-            const contractData = await contractResponse.json()
-
-            if (!contractResponse.ok || !contractData.success)
-                throw new Error(contractData.message)
         } catch (err) {
             showMessage(err.message, 'error-message')
             console.error(err)
         } finally {
-            // window.location.reload()
-            reload()
+            update()
         }
     }
 

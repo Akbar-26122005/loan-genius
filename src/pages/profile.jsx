@@ -19,7 +19,7 @@ export default function Profile() {
     const [middleName, setMiddleName] = useState('')
     const [userDataChanged, setUserDataChanged] = useState(false)
     
-    const [passport, setPassport] = useState(null)
+    const [passport, setPassport] = useState(user.passports)
     const [series, setSeries] = useState('')
     const [number, setNumber] = useState('')
     const [issuedBy, setIssuedBy] = useState('')
@@ -29,28 +29,9 @@ export default function Profile() {
     const [passportDataChanged, setPassportDataChanged] = useState(false)
 
     useEffect(() => {
-        const fetchPassportData = async () => {
-            try {
-                const response = await fetch(getPath(`/passport/get?user_id=${user.id}`), {
-                    method: 'GET'
-                    ,headers: { 'Content-Type': 'application/json' }
-                    ,credentials: 'include'
-                })
-
-                const data = await response.json()
-
-                if (!response.ok || !data.success)
-                    throw new Error(data.message)
-
-                setPassport(data.passport)
-            } catch (err) {
-                setPassport(null)
-            }
-        }
-
-        fetchPassportData()
         handleCancelUserData()
-    }, [reload])
+        handleCancelPassportData()
+    }, [user, passport])
 
     useEffect(() => {
         setUserDataChanged(
@@ -153,7 +134,7 @@ export default function Profile() {
         }
     }
 
-    // Создание новых паспортных данных
+    // Create the new passport row
     const handleCreatePassportData = async () => {
         if (!passportDataChanged) return
         try {

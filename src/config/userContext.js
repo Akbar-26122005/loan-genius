@@ -6,32 +6,35 @@ export const UserContext = createContext()
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
+    const [res, setRes] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const response = await fetch(getPath('/auth/check'), {
-                    method: 'GET'
-                    ,headers: { 'Content-Type': 'application/json' }
-                    ,credentials: 'include'
-                })
+    const checkAuth = async () => {
+        try {
+            const response = await fetch(getPath('/auth/check'), {
+                method: 'GET'
+                ,headers: { 'Content-Type': 'application/json' }
+                ,credentials: 'include'
+            })
 
-                const data = await response.json()
-                
-                if (!response.ok || !data.isAuthenticated)
-                    throw new Error(data.message || 'No authenticated')
+            const data = await response.json()
+            
+            if (!response.ok || !data.isAuthenticated)
+                throw new Error(data.message || 'No authenticated')
 
-                sessionStorage.setItem('user', JSON.stringify(data.user))
-                setUser(data.user)
-            } catch (err) {
-                sessionStorage.removeItem('user')
-                setUser(null)
-            } finally {
-                setLoading(false)
-            }
+            sessionStorage.setItem('user', JSON.stringify(data.user))
+            setUser(data.user)
+            if (data.res)
+                setRes(data.res)
+        } catch (err) {
+            sessionStorage.removeItem('user')
+            setUser(null)
+        } finally {
+            setLoading(false)
         }
+    }
 
+    useEffect(() => {
         if (!user) {
             checkAuth()
         } else {
@@ -42,7 +45,9 @@ export function UserProvider({ children }) {
 
     const value = {
         user
+        ,res
         ,loading
+        ,update: () => checkAuth()
         ,setUser: (newUser) => {
             if (newUser) {
                 sessionStorage.setItem('user', JSON.stringify(newUser))

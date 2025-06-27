@@ -4,19 +4,27 @@
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
+
+    & > .title {
+        color: var(--fore-color);
+        font-size: 32px;
+        opacity: 0.7;
+        height: max-content;
+    }
 }
 
 .Product {
-    background: #bbb;
+    background: #374151;
     border-radius: 32px;
-    margin: 20px;
-    height: 300px;
+    height: 240px;
     box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.4);
     cursor: pointer;
     transition: all 0.3s linear;
     display: flex; flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    color: var(--fore-color);
+    opacity: 0.9;
 
     &:hover {
         transform: scale(1.025);
