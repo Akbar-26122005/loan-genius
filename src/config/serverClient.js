@@ -1,4 +1,4 @@
-const server_address = process.env.REACT_APP_SERVER_ADDRESS
+const server_address = process.env.REACT_APP_SERVER_ADDRESS;
 
 const getPath = (path = '') => {
     const full_path = `${server_address}${path}`   
