@@ -38,7 +38,7 @@
 
         & > div {
             width: max-content;
-            display: flex;
+            display: flex !important;
             cursor: pointer;
             flex-wrap: nowrap;
 

@@ -4,6 +4,9 @@
       "source": "/",
       "destination": "https://www.example.com/",
       "permanent": true,
+      "experimental": {
+        "optimizeCss": false
+      },
       "has": [
         {
           "type": "host",
