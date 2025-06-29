@@ -40,6 +40,7 @@
             width: max-content;
             display: flex;
             cursor: pointer;
+            flex-wrap: nowrap;
 
             &:hover {
                 opacity: 0.6;
