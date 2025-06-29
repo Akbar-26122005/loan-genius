@@ -181,8 +181,7 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
             if (!response.ok || !data.success)
                 throw new Error(data.message)
 
-            setUser(data.user)
-            navigate(data.user.is_staff ? '/employee' : '/mybank')
+            window.location.replace('/mybank')
         } catch (err) {
             showMessage(err.message)
         }
@@ -241,7 +240,6 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [birthDate, setBirthDate] = useState(null);
-    const navigate = useNavigate();
     
     const userSignUp = async e => {
         e.preventDefault();
@@ -275,8 +273,7 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
             if (!data.success)
                 throw new Error('Failed to register')
 
-            setUser(data.user)
-            navigate('/mybank')
+            window.location.replace('/mybank')
         } catch (err) {
             showMessage(err.message)
         }

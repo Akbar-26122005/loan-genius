@@ -1,0 +1,146 @@
+.MyBank .Payments {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: var(--fore-color);
+    opacity: 0.8;
+    align-items: start;
+    justify-content: start;
+
+    & > .payments {
+        display: grid;
+        align-content: start;
+        justify-items: start;
+        gap: 20px;
+    }
+
+}
+.MyBank .Payments > .payment-form {
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+
+    & > .form {
+        background: #374151;
+        width: 800px;
+        height: 520px;
+        border-radius: 24px;
+        display: grid;
+        place-content: center;
+    }
+
+    & > .form > .row {
+        width: auto;
+        height: auto;
+        display: grid;
+        justify-items: start;
+    }
+
+    & > .form > .row > label {
+        margin-bottom: 4px;
+    }
+
+    & > .form > .row > input {
+        width: 300px;
+    }
+
+    & > .form > button {
+        cursor: pointer;
+        font-size: 16px;
+        width: max-content;
+        justify-self: center;
+        padding: 6px 24px;
+    }
+}
+
+.MyBank .Payments .Payment {
+    font-size: 16px;
+    background: #00A870;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    border-radius: 14px;
+    gap: 14px;
+    transition: all 0.3s ease;
+    padding: 0 20px;
+
+    &:hover {
+        border-radius: 18px;
+    }
+
+    & .row {
+        width: 80%;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.MyBank .Payments .Payment .column {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+
+    &.middle {
+        width: 0;
+        transition: all 0.5s ease-in;
+
+        &.active {
+            width: 200px;
+        }
+
+        & > div {
+            display: flex;
+            gap: 14px;
+        }
+
+        & > div > button {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            font-size: 16px;
+            padding: 4px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--fore-color);
+            transition:
+                opacity 0.3s ease 0s,
+                visibility 0s linear 0.3s;
+
+            &.active {
+                opacity: 0.9;
+                visibility: visible;
+                pointer-events: auto;
+                transition-delay: 0.4s;
+                transition:
+                    opacity 0.3s ease 0.3s,
+                    visibility 0s linear 0s;
+            }
+        }
+    }
+
+    &.last {
+        width: max-content;
+        transform: rotate(180deg);
+
+        &.active {
+            & > img {
+                transform: rotate(180deg);
+            }
+        }
+
+        & > img {
+            cursor: pointer;
+        }
+    }
+}

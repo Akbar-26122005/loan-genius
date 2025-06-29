@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Auth from './pages/auth';
 import Profile from './pages/profile';
 import Products from './pages/products'
-import Error404 from './pages/page404';
-import MyBank from './pages/mybank';
+import MyBank from './pages/mybank/mybank';
 import Employee from './pages/employee';
 import Loading from './components/loading';
+import { Page404 } from './pages/displayOnly'
+
 import { MessageSystem} from './components/messages';
 import { UserProvider } from './config/userContext';
 import { ProtectedUserRoute, ProtectedEmployeeRoute } from './config/ProtectedRoute';
@@ -33,7 +34,7 @@ export default function App() {
               <Route path='/employee' element={ <Employee /> } />
             </Route>
             <Route path='/loading' element={ <Loading /> } />
-            <Route path='*' element={ <Error404 /> } />
+            <Route path='*' element={ <Page404 /> } />
             </Routes>
         </Router>
         <MessageSystem />

@@ -1,0 +1,43 @@
+.MyBank .Operations {
+    width: 100%;
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center;
+
+    & > * {
+        margin-top: 60px;
+    }
+}
+
+.MyBank .Operations > .operations{
+    width: 80%;
+    height: 90%;
+    background: #374151;
+    border-radius: 18px;
+    overflow: auto;
+    box-shadow: 2px 2px 8px 3px rgba(20, 20, 20, 0.4);
+    color: var(--fore-color);
+}
+
+.MyBank .Operations > .operations .HistoryGroup {
+    display: grid;
+    background: red;
+
+    & > .head {
+        justify-self: start;
+    }
+    
+    & > .elements {
+        justify-self: center;
+    }
+}
+
+.MyBank .Operations > .operations  .HistoryTile {
+    background: red;
+    width: 400px;
+    justify-self: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 20px;
+    margin-bottom: 10px;
+}
