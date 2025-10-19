@@ -59,26 +59,22 @@ export default function Payments() {
                         <Payment
                             key={ pmt.id }
                             payment={ pmt }
-                            onClick={ () =>  selectedPaymentChange(
-                                selectedPayment === pmt ? null : pmt
-                            ) }
-                            formOpen={ () => showFormChange(true) }
-                            isActive={ selectedPayment === pmt }
+                            formOpen={ () => selectedPaymentChange(pmt) }
                         />
                     )
                 }
             </div>
-            { showForm && selectedPayment &&
+            { selectedPayment &&
                 <Form
                     payment={ selectedPayment }
-                    onClose={ () => showFormChange(false) }
+                    onClose={ () => selectedPaymentChange(null) }
                 />
             }
         </div>
     )
 }
 
-function Payment({ payment, onClick, formOpen, isActive }) {
+function Payment({ payment, formOpen }) {
     const { user } = useContext(UserContext)
     const [contract, setContract] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -100,22 +96,18 @@ function Payment({ payment, onClick, formOpen, isActive }) {
     }, [user])
 
     const handleClick = () => {
-        onClick()
+        formOpen()
     }
 
     if (loading) return <Loading />
     if (!contract) return null
 
     return (
-        <div className="Payment">
+        <div className="Payment" onClick={ handleClick }>
             <div className="column first">
                 <div className="row">
-                    <label>Account:</label>
+                    <label>Contract:</label>
                     <div>{ contract.contract_number }</div>
-                </div>
-                <div className="row">
-                    <label>Pay before:</label>
-                    <div>{ payment.scheduled_date }</div>
                 </div>
                 <div className="row">
                     <label>Amount:</label>
@@ -126,24 +118,6 @@ function Payment({ payment, onClick, formOpen, isActive }) {
                     <div>{ payment.scheduled_date }</div>
                 </div>
             </div>
-            <div className={ `column middle ${isActive && 'active'}` }>
-                <div>
-                    <button
-                        className={ `tool ${ isActive && 'active' }` }
-                        onClick={ formOpen }
-                        >To pay</button>
-                </div>
-            </div>
-            <div
-                className={`column last ${ isActive && 'active' }`}
-                onClick={ handleClick }
-                >
-                <img
-                    src={ back_icon }
-                    alt=""
-                />
-            </div>
-            
         </div>
     )
 }

@@ -71,6 +71,7 @@
     gap: 14px;
     transition: all 0.3s ease;
     padding: 0 20px;
+    cursor: pointer;
 
     &:hover {
         border-radius: 18px;

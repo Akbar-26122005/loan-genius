@@ -3,6 +3,7 @@ import '../styles/products.css';
 import getPath from "../config/serverClient";
 import { showMessage } from "../components/messages";
 import { UserContext } from "../config/userContext";
+import { BackButton } from "../components/CommonComponents";
 
 export default function Products() {
     const { user } = useContext(UserContext)
@@ -47,6 +48,7 @@ export default function Products() {
             }
 
             { form && form }
+            <BackButton onClick={ () => window.history.back() } />
         </div>
     )
 }
@@ -179,7 +181,7 @@ function Form({ product, isClosed }) {
                         />
                     </div>
                 </div>
-                <button type="submit" className="send-btn" onClick={ handleSend }>Send</button>
+                <button type="submit" className="send-btn" onClick={ handleSend }>Send application</button>
             </form>
         </div>
     )

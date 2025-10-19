@@ -4,6 +4,7 @@ import { showMessage } from "../components/messages"
 import getPath from "../config/serverClient"
 import { UserContext } from "../config/userContext"
 import back_icon from '../images/back_icon.svg'
+import { BackButton } from "../components/CommonComponents"
 import '../styles/profile.css'
 
 export default function Profile() {
@@ -329,20 +330,6 @@ export default function Profile() {
                 </div>
             </div>
             <BackButton onClick={ () => window.history.back() } />
-        </div>
-    )
-}
-
-function BackButton({ onClick }) {
-    return (
-        <div
-            className="BackButton"
-            onClick={ onClick }
-        >
-            <img
-                src={ back_icon }
-                alt="back"
-            />
         </div>
     )
 }

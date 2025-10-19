@@ -159,7 +159,6 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
 
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate()
 
     const userLogIn = async e => {
         e.preventDefault();
@@ -378,14 +377,14 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     placeholder=''
                     value={ birthDate }
                     onChange={ e => setBirthDate(e.target.value) } />
-                <label htmlFor="r-email-input">email</label>
+                <label htmlFor="r-email-input">birth date</label>
             </div>
             <button id='log-in-btn'>Sign up</button>
             <div>
                 <div className='transition-hint'>
                     Don't have an account?</div>
                 <div className='transition-link' id='go-to-log-in' onClick={ () => goOverTransition() }>
-                    <div>Sign up</div>
+                    <div>Log in</div>
                 </div>
             </div>
         </form>
