@@ -157,7 +157,7 @@ function DataForm({ appl, onClose }) {
     }, [res])
 
     const close = e => {
-        if (e.target.className.includes('DataForm'))
+        if (e === 1 || e.target.className.includes('DataForm'))
             onClose()
     }
 
@@ -166,6 +166,7 @@ function DataForm({ appl, onClose }) {
     }
 
     const handleSelect = async (status) => {
+        setLoading(true)
         try {
             const user_id = String(user.id)
             const accountNumber = `UI${user_id.length > 2 ? user_id[0] + user_id[1] : user_id}ND${getDateFromTimestamp(new Date())}DT${getDateFromTimestamp(appl.created_at)}PL`
@@ -198,6 +199,8 @@ function DataForm({ appl, onClose }) {
             console.error(err)
         } finally {
             update()
+            setLoading(false)
+            close(1)
         }
     }
 

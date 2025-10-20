@@ -10,6 +10,7 @@ import '../styles/auth.css';
 export default function Auth() {
     const { user, setUser } = useContext(UserContext)
     const [isLogInMode, setIsLogInMode] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ export default function Auth() {
             window.location.replace('/mybank')
             return
         }
-    }, [])
+    }, [user])
 
     function showMessage(msg) {
         setMessage(msg)
@@ -32,80 +33,38 @@ export default function Auth() {
         document.getElementById(focusElement).focus();
     }
 
-    let initialized = false;
-    let contextRect = null;
-    let loginMeeting = null;
-    let loginForm = null;
-    let signUpMeeting = null;
-    let signUpForm = null;
-    const rectStateSignUp = 'rect-state-signUp';
-
-    function tryInit() {
-        if (initialized) return;
-        contextRect = document.querySelector('.context-rect');
-
-        //login
-        loginMeeting = document.querySelector('.login.meeting');
-        loginForm = document.querySelector('.login.form');
-        //sign up
-        signUpMeeting = document.querySelector('.signUp.meeting');
-        signUpForm = document.querySelector('.signUp.form');
-
-        initialized = true;
-    }
-    
-    async function goOverTransition() {
-        tryInit();
-        setIsLogInMode(!isLogInMode);
-        if (contextRect.classList.contains(rectStateSignUp)) {
-            contextRect.classList.remove(rectStateSignUp);
-
-            // Установка задержки перед применением перехода
-            signUpMeeting.style.transitionDelay = '0';
-            signUpForm.style.transitionDelay = '0';
-
-            loginMeeting.style.transitionDelay = '2.3s';
-            loginForm.style.transitionDelay = '2.3s';
-
-            signUpMeeting.style.display = 'none';
-            signUpForm.style.display = 'none';
-
-            loginMeeting.style.display = 'flex';
-            loginForm.style.display = 'flex';
-        } else {
-            contextRect.classList.add(rectStateSignUp);
-
-            // Установка задержки перед применением перехода
-            loginMeeting.style.transitionDelay = '0';
-            loginForm.style.transitionDelay = '0';
-
-            signUpMeeting.style.transitionDelay = '2.3s';
-            signUpForm.style.transitionDelay = '2.3s';
-            
-            signUpMeeting.style.display = 'flex';
-            signUpForm.style.display = 'flex';
-            
-            loginMeeting.style.display = 'none';
-            loginForm.style.display = 'none';
-        }
-        console.log(isLogInMode);
-    }
+    const goOverTransition = () => {
+        if (isTransitioning) return;
+        
+        setIsTransitioning(true);
+        
+        // После завершения анимации сменяем режим
+        setTimeout(() => {
+            setIsLogInMode(!isLogInMode);
+        }, 200);
+        
+        setTimeout(() => {
+            setIsTransitioning(false);
+        }, 1_800)
+    };
 
     return (
         <div className='Auth'>
             <div className="auth-context">
                 <div className={`context-rect ${isLogInMode ? '' : 'rect-state-signUp'}`}></div>
+                
                 {/* Форма для входа */}
                 <LogInForm
-                    isLogInMode={ isLogInMode }
-                    goOverTransition={ goOverTransition }
-                    passwordVisibilityControl={ passwordVisibilityControl }
-                    showMessage={ showMessage }
-                    user={ user }
-                    setUser={ setUser }
+                    isVisible={isLogInMode && !isTransitioning}
+                    passwordVisibilityControl={passwordVisibilityControl}
+                    goOverTransition={goOverTransition}
+                    showMessage={showMessage}
+                    user={user}
+                    setUser={setUser}
                 />
+                
                 {/* Приветствие пользователя при входе */}
-                <div className={ `login meeting ${ isLogInMode ? '' : 'hide' }` }>
+                <div className={`login meeting ${isLogInMode && !isTransitioning ? '' : 'hide'}`}>
                     <h1 className="main-text">
                         <div onClick={() => goOverTransition()}>WELCOME</div>
                         <div>BACK!</div>
@@ -119,12 +78,8 @@ export default function Auth() {
                     </div>
                 </div>
 
-                {/*  */}
-                {/* Регистрация */}
-                {/*  */}
-
                 {/* Приветствие пользователя при регистрации */}
-                <div className={ `signUp meeting ${ !isLogInMode ? '' : 'hide' }`}>
+                <div className={`signUp meeting ${!isLogInMode && !isTransitioning ? '' : 'hide'}`}>
                     <div className="main-text">
                         <h1>WELCOME!</h1>
                     </div>
@@ -135,15 +90,17 @@ export default function Auth() {
                         <div>feel free to reach out.</div>
                     </div>
                 </div>
+                
                 {/* Форма регистрации */}
                 <SignUpForm
-                    isLogInMode={ isLogInMode }
-                    goOverTransition={ goOverTransition }
-                    passwordVisibilityControl={ passwordVisibilityControl }
-                    showMessage={ showMessage }
-                    user={ user }
-                    setUser={ setUser }
+                    isVisible={!isLogInMode && !isTransitioning}
+                    goOverTransition={goOverTransition}
+                    passwordVisibilityControl={passwordVisibilityControl}
+                    showMessage={showMessage}
+                    user={user}
+                    setUser={setUser}
                 />
+                
                 {/* Кнопка возврата назад */}
                 <div className='back-button' onClick={() => {navigate('/', { replace: true })}}>
                     <img src={back_icon} alt="" />
@@ -154,9 +111,8 @@ export default function Auth() {
     );
 }
 
-function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, showMessage, user, setUser }) {
+function LogInForm({ isVisible, passwordVisibilityControl, goOverTransition, showMessage, user, setUser }) {
     const [showLogInPassword, setShowLogInPassword] = useState(false);
-
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
 
@@ -188,8 +144,8 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
 
     return (
         <form
-            className={ `login form ${isLogInMode ? '' : ' hide'}` }
-            onSubmit={ userLogIn }
+            className={`login form ${isVisible ? '' : 'hide'}`}
+            onSubmit={userLogIn}
         >
             <h1 className='main-text'>Login</h1>
             <div className="row">
@@ -197,8 +153,8 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
                     type='text'
                     id='login-input'
                     placeholder=''
-                    value={ login }
-                    onChange={ e => setLogin(e.target.value) } />
+                    value={login}
+                    onChange={e => setLogin(e.target.value)} />
                 <label htmlFor="login-input">Login</label>
             </div>
             <div className='row'>
@@ -206,28 +162,28 @@ function LogInForm({ isLogInMode, passwordVisibilityControl, goOverTransition, s
                     type={showLogInPassword ? 'text' : 'password'}
                     id='password-input'
                     placeholder=''
-                    value={ password }
-                    onChange={ e => setPassword(e.target.value) } />
+                    value={password}
+                    onChange={e => setPassword(e.target.value)} />
                 <label htmlFor="password-input">
                     Password</label>
                 <img
                     alt="" id='log-in-password-visibility-control'
                     className='password-visibility-control'
                     onClick={() => passwordVisibilityControl(setShowLogInPassword, showLogInPassword, 'log-in-password-visibility-control')}
-                    src={ showLogInPassword ? visibility_icon : visibility_off_icon} />
+                    src={showLogInPassword ? visibility_icon : visibility_off_icon} />
             </div>
             <button id='log-in-btn'>Login</button>
             <div>
                 <div className='transition-hint'>
                     Don't have an account?</div>
-                <div className='transition-link' id='go-to-sign-up' onClick={ () => goOverTransition() }>
+                <div className='transition-link' id='go-to-sign-up' onClick={() => goOverTransition()}>
                     Sign up</div>
             </div>
         </form>
     );
 }
 
-function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, showMessage, user, setUser }) {
+function SignUpForm({ isVisible, passwordVisibilityControl, goOverTransition, showMessage, user, setUser }) {
     const [showSignUpPassword, setShowSignUpPassword] = useState(false);
     const [showSignUpRepeatPassword, setShowSignUpRepeatPassword] = useState(false);
 
@@ -294,16 +250,16 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
 
     return (
         <form
-            className={ `signUp form ${!isLogInMode ? '' : 'hide'}` }
-            onSubmit={ userSignUp } >
+            className={`signUp form ${isVisible ? '' : 'hide'}`}
+            onSubmit={userSignUp}>
             <h1 className='main-text'>Sign up</h1>
             <div className="row">
                 <input required
                     type='text'
                     id='first-name-input'
                     placeholder=''
-                    value={ firstName }
-                    onChange={ e => setFirstName(e.target.value) } />
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)} />
                 <label htmlFor="first-name-input">first name</label>
             </div>
             <div className="row">
@@ -311,8 +267,8 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     type='text'
                     id='last-name-input'
                     placeholder=''
-                    value={ lastName }
-                    onChange={ e => setLastName(e.target.value) } />
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)} />
                 <label htmlFor="last-name-input">last name</label>
             </div>
             <div className="row">
@@ -320,8 +276,8 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     type='text'
                     id='middle-name-input'
                     placeholder=''
-                    value={ middleName }
-                    onChange={ e => setMiddleName(e.target.value) } />
+                    value={middleName}
+                    onChange={e => setMiddleName(e.target.value)} />
                 <label htmlFor="middle-name-input">middle name</label>
             </div>
             <div className="row">
@@ -329,9 +285,9 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     type='tel'
                     id='phone-number-input'
                     placeholder=''
-                    value={ phoneNumber }
-                    onChange={ handleChangePhoneNumber }
-                    minLength={ 12 }/>
+                    value={phoneNumber}
+                    onChange={handleChangePhoneNumber}
+                    minLength={12}/>
                 <label htmlFor="phone-number-input">phone number</label>
             </div>
             <div className="row">
@@ -339,8 +295,8 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     type='email'
                     id='r-email-input'
                     placeholder=''
-                    value={ email}
-                    onChange={ e => setEmail(e.target.value) } />
+                    value={email}
+                    onChange={e => setEmail(e.target.value)} />
                 <label htmlFor="r-email-input">email</label>
             </div>
             <div className='row'>
@@ -349,13 +305,13 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     name='password'
                     placeholder=''
                     type={showSignUpPassword ? 'text' : 'password'}
-                    value={ password }
-                    onChange={ e => setPassword(e.target.value) }
-                    minLength={ 8 } />
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    minLength={8} />
                 <label htmlFor="r-password-input">password</label>
                 <img alt="" id='sign-up-password-visibility-control' className='password-visibility-control'
                     onClick={() => passwordVisibilityControl(setShowSignUpPassword, showSignUpPassword, 'sign-up-password-visibility-control')}
-                    src={ showSignUpPassword ? visibility_icon : visibility_off_icon} />
+                    src={showSignUpPassword ? visibility_icon : visibility_off_icon} />
             </div>
             <div className='row'>
                 <input required
@@ -363,27 +319,27 @@ function SignUpForm({ isLogInMode, passwordVisibilityControl, goOverTransition, 
                     name='r-repeat-password'
                     placeholder=''
                     type={showSignUpRepeatPassword ? 'text' : 'password'}
-                    value={ repeatPassword }
-                    onChange={ e => setRepeatPassword(e.target.value) } />
+                    value={repeatPassword}
+                    onChange={e => setRepeatPassword(e.target.value)} />
                 <label htmlFor="r-repeat-password-input">repeat password</label>
                 <img alt="" id='sign-up-repeat-password-visibility-control' className='password-visibility-control'
                     onClick={() => passwordVisibilityControl(setShowSignUpRepeatPassword, showSignUpRepeatPassword, 'sign-up-repeat-password-visibility-control')}
-                    src={ showSignUpRepeatPassword ? visibility_icon : visibility_off_icon} />
+                    src={showSignUpRepeatPassword ? visibility_icon : visibility_off_icon} />
             </div>
             <div className="row">
                 <input required
                     type='date'
                     id='r-date-input'
                     placeholder=''
-                    value={ birthDate }
-                    onChange={ e => setBirthDate(e.target.value) } />
+                    value={birthDate}
+                    onChange={e => setBirthDate(e.target.value)} />
                 <label htmlFor="r-email-input">birth date</label>
             </div>
             <button id='log-in-btn'>Sign up</button>
             <div>
                 <div className='transition-hint'>
                     Don't have an account?</div>
-                <div className='transition-link' id='go-to-log-in' onClick={ () => goOverTransition() }>
+                <div className='transition-link' id='go-to-log-in' onClick={() => goOverTransition()}>
                     <div>Log in</div>
                 </div>
             </div>
