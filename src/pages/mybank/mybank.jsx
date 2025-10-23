@@ -59,8 +59,8 @@ export default function MyBank() {
                         </div>
                     )) }
                 </div>
-                <div className="last" onClick={ navigateToProfile }>
-                    <div className="user-panel">
+                <div className="last">
+                    <div className="user-panel"  onClick={ navigateToProfile }>
                         <div>{ user.first_name || '' }</div>
                         <img
                             src={ account_box_icon }
