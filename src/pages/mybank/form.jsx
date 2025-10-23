@@ -89,7 +89,7 @@ export default function Form({ payment, onClose }) {
                     />
                 </div>
                 <div className="row">
-                    <label></label>
+                    <label>Paid date</label>
                     <input
                         type="text"
                         value={ paidDate }
