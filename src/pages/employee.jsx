@@ -20,13 +20,18 @@ export default function Employee() {
 
     const handleLogOut = async () => {
         try {
-            await fetch(getPath('/auth/log-out'), {
+            const response = await fetch(getPath('/auth/log-out'), {
                 method: 'GET'
                 ,headers: { 'Content-Type': 'application/json' }
                 ,credentials: 'include'
             })
 
-            navigate('/', { replace: true })
+            const result = await response.json()
+
+            if (response.ok && result.success)
+                setTimeout(() => navigate('/', { replace: true }), 1000)
+            else
+                throw new Error(data.message)
         } catch (err) {
             showMessage(err.message, 'error-message')
         }

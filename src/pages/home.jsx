@@ -30,7 +30,9 @@ function Home() {
     
             const data = await response.json()
     
-            if (!response.ok || !data.success)
+            if (response.ok && data.success)
+                setTimeout(() => navigate('/', { replace: true }), 1000)
+            else
                 throw new Error(data.message)
 
             window.location.reload()
