@@ -29,7 +29,7 @@ export default function Employee() {
             const result = await response.json()
 
             if (response.ok && result.success)
-                setTimeout(() => navigate('/', { replace: true }), 1000)
+                setTimeout(() => window.location.replace('/'), 1000)
             else
                 throw new Error(data.message)
         } catch (err) {

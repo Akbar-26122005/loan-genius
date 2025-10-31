@@ -31,7 +31,7 @@ function Home() {
             const data = await response.json()
     
             if (response.ok && data.success)
-                setTimeout(() => navigate('/', { replace: true }), 1000)
+                setTimeout(() => window.location.replace('/'), 1000)
             else
                 throw new Error(data.message)
 
